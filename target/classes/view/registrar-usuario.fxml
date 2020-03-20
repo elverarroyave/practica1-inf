@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.RegistrarUsuarioController">
+<children>
+      <BorderPane prefHeight="401.0" prefWidth="600.0">
+         <center>
+          <Button mnemonicParsing="false" onAction="#btnSaludar_clic" text="Saludar" BorderPane.alignment="CENTER" />
+         </center>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="Gestor de usuario">
+                  <items>
+                        <Menu mnemonicParsing="false" text="Empleados">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Registrar empleado" />
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Clientes">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Registrar Cliente" />
+                          </items>
+                        </Menu>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Gestor de equipos">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Registrar equipo" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Solicitudes">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Crear solicitud" />
+                        <MenuItem mnemonicParsing="false" text="Consultar estado de solicitud" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+      </BorderPane>
+</children>
+</AnchorPane>
