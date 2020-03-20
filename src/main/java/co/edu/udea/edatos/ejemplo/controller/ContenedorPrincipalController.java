@@ -24,4 +24,13 @@ public class ContenedorPrincipalController {
         }
     }
 
+    public void mnuAddClient(){
+        try{
+            AnchorPane addClient = FXMLLoader.load(getClass().getClassLoader().getResource("view/userManager/client/add-client.fxml"));
+            contenedorPrincipal.setCenter(addClient);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

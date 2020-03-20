@@ -11,7 +11,7 @@
          <children>
             <Label text="Registrar nuevo empleado" textFill="#2301ff">
                <VBox.margin>
-                  <Insets left="20.0" top="20.0" />
+                  <Insets left="20.0" top="10.0" />
                </VBox.margin>
                <font>
                   <Font name="System Bold Italic" size="25.0" />

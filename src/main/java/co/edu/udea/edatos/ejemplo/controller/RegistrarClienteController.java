@@ -1,10 +1,12 @@
 package co.edu.udea.edatos.ejemplo.controller;
 
-import co.edu.udea.edatos.ejemplo.model.Empleado;
+import co.edu.udea.edatos.ejemplo.model.Cliente;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-public class RegistrarEmpleadoController {
+import java.sql.SQLOutput;
+
+public class RegistrarClienteController {
 
     @FXML
     private TextField txtId;
@@ -12,10 +14,6 @@ public class RegistrarEmpleadoController {
     private TextField txtName;
     @FXML
     private TextField txtLastName;
-    @FXML
-    private TextField txtIdEmployee;
-    @FXML
-    private TextField txtPassWord;
     @FXML
     private TextField txtBornDate;
     @FXML
@@ -25,20 +23,20 @@ public class RegistrarEmpleadoController {
     @FXML
     private TextField txtNumberPhone;
 
-    public void addEmployee(){
+    public void addClient(){
+
         String name = txtName.getText();
         int id = Integer.parseInt(txtId.getText());
         String lastName = txtLastName.getText();
-        String idEmployee = txtIdEmployee.getText();
-        String passWord = txtPassWord.getText();
         String bornDate =txtBornDate.getText();
         String email = txtEmail.getText();
         String adress = txtAdress.getText();
         String numberPhone = txtNumberPhone.getText();
 
-        Empleado empleado = new Empleado(id,name,lastName,idEmployee,passWord,bornDate,email,adress,numberPhone);
+        Cliente cliente = new Cliente(id,name,lastName,bornDate,email,adress,numberPhone);
 
-        System.out.println("Registramos empleado con nombre "+ name +" y identificacion " + txtId.getText());
+        System.out.println("Registramos Cliente con nombre "+ name +" y identificacion " + txtId.getText());
+
     }
 
 }

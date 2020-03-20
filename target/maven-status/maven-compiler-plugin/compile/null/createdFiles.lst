@@ -4,4 +4,5 @@ co\edu\udea\edatos\ejemplo\model\Solicitud.class
 co\edu\udea\edatos\ejemplo\model\Empleado.class
 co\edu\udea\edatos\ejemplo\controller\RegistrarEmpleadoController.class
 co\edu\udea\edatos\ejemplo\model\Cliente.class
+co\edu\udea\edatos\ejemplo\controller\RegistrarClienteController.class
 co\edu\udea\edatos\ejemplo\controller\ContenedorPrincipalController.class

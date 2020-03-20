@@ -4,18 +4,15 @@ public class Cliente {
     private int id;
     private String name;
     private String lastName;
-    //private String user;
-    private String password;
     private String dateBorn;
     private String email;
     private String adress;
     private String numberPhone;
 
-    public Cliente(int id, String name, String lastName, String password, String dateBorn, String email, String adress, String numberPhone) {
+    public Cliente(int id, String name, String lastName, String dateBorn, String email, String adress, String numberPhone) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
-        this.password = password;
         this.dateBorn = dateBorn;
         this.email = email;
         this.adress = adress;
@@ -44,14 +41,6 @@ public class Cliente {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getDateBorn() {
