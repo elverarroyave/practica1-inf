@@ -2,5 +2,6 @@ co\edu\udea\edatos\ejemplo\Main.class
 co\edu\udea\edatos\ejemplo\model\Equipo.class
 co\edu\udea\edatos\ejemplo\model\Solicitud.class
 co\edu\udea\edatos\ejemplo\model\Empleado.class
-co\edu\udea\edatos\ejemplo\controller\RegistrarUsuarioController.class
+co\edu\udea\edatos\ejemplo\controller\RegistrarEmpleadoController.class
 co\edu\udea\edatos\ejemplo\model\Cliente.class
+co\edu\udea\edatos\ejemplo\controller\ContenedorPrincipalController.class
