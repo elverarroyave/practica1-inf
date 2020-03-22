@@ -51,7 +51,7 @@ public class EquipoDaoNio implements EquipoDao {
     }
 
     public List<Equipo> getEquipoByUserId(int userId) {
-        List<Equipo> equipos = new ArrayList();
+        List<Equipo> equipos = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {

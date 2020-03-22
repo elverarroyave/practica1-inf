@@ -55,13 +55,14 @@ public class EmpleadoDaoNio implements EmpleadoDao {
     }
 
     public List<Empleado> findAll() {
-        List<Empleado> empleados = new ArrayList();
+        List<Empleado> empleados = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
                 Empleado empleado = parseRegistro(registro);
+                empleados.add(empleado);
                 buffer.flip();
             }
         } catch (IOException ioe) {
