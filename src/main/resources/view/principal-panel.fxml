@@ -12,11 +12,13 @@
                     <Menu mnemonicParsing="false" text="Empleados">
                       <items>
                         <MenuItem mnemonicParsing="false" onAction="#mnuAddEmployee" text="Registrar empleado" />
+                        <MenuItem fx:id="mnuListEmployee" mnemonicParsing="false" onAction="#mnuListEmployee" text="Listar empleados" />
                       </items>
                     </Menu>
                     <Menu mnemonicParsing="false" text="Clientes">
                       <items>
                         <MenuItem mnemonicParsing="false" onAction="#mnuAddClient" text="Registrar Cliente" />
+                        <MenuItem mnemonicParsing="false" onAction="#mnuListClient" text="Listar Clientes" />
                       </items>
                     </Menu>
               </items>

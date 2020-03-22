@@ -1,4 +1,4 @@
-package co.edu.udea.edatos.ejemplo.controller;
+package co.edu.udea.edatos.ejemplo.controller.user.employee;
 
 import co.edu.udea.edatos.ejemplo.bsn.EmpleadoBsn;
 import co.edu.udea.edatos.ejemplo.model.Empleado;

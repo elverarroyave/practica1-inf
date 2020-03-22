@@ -1,13 +1,13 @@
-package co.edu.udea.edatos.ejemplo.controller;
+package co.edu.udea.edatos.ejemplo.controller.user.client;
 
 import co.edu.udea.edatos.ejemplo.bsn.ClienteBsn;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-import java.sql.SQLOutput;
 
 public class RegistrarClienteController {
+
 
     @FXML
     private TextField txtId;

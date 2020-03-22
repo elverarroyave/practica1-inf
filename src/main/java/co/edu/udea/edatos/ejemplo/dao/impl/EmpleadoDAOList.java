@@ -13,6 +13,6 @@ public class EmpleadoDAOList implements EmpleadoDAO {
     @Override
     public void guardarEmpleado(Empleado empleado) {
         bdEmpleados.add(empleado);
-        JOptionPane.showMessageDialog(null,"Empleado almacenado correctamente", "Base de datos empleado", JOptionPane.INFORMATION_MESSAGE  );
+        JOptionPane.showMessageDialog(null,"Empleado '" + empleado.getName() + "' almacenado correctamente", "Base de datos empleado", JOptionPane.INFORMATION_MESSAGE  );
     }
 }

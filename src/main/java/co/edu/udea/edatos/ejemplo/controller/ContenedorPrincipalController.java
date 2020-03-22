@@ -33,4 +33,23 @@ public class ContenedorPrincipalController {
         }
     }
 
+    public void mnuListClient(){
+        try{
+            AnchorPane listClient = FXMLLoader.load(getClass().getClassLoader().getResource("view/userManager/client/client-list.fxml"));
+            contenedorPrincipal.setCenter(listClient);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuListEmployee(){
+        try {
+            AnchorPane listEmployee = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/employee/employee-list.fxml")));
+            contenedorPrincipal.setCenter(listEmployee);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

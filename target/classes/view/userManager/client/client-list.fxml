@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="471.0" prefWidth="482.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.user.client.ListClientController">
+   <children>
+      <Pane prefHeight="78.0" prefWidth="482.0">
+         <children>
+            <Label layoutX="152.0" layoutY="22.0" text="Lista de clientes" textFill="#01aaff">
+               <font>
+                  <Font name="System Bold Italic" size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Pane layoutX="28.0" layoutY="67.0" prefHeight="391.0" prefWidth="418.0">
+         <children>
+            <TableView layoutY="-11.0" prefHeight="328.0" prefWidth="418.0">
+              <columns>
+                <TableColumn prefWidth="98.0" text="Identificacion" />
+                <TableColumn prefWidth="128.0" text="Nombre" />
+                <TableColumn prefWidth="191.0" text="Apellido" />
+              </columns>
+            </TableView>
+            <Button layoutX="-3.0" layoutY="334.0" mnemonicParsing="false" text="Editar" />
+            <Button layoutX="55.0" layoutY="334.0" mnemonicParsing="false" text="Borrar" />
+            <Button layoutX="382.0" layoutY="334.0" mnemonicParsing="false" text="Salir" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
