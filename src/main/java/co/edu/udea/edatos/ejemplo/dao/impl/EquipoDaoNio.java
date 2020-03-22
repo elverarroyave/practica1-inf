@@ -69,6 +69,25 @@ public class EquipoDaoNio implements EquipoDao {
         return equipos;
     }
 
+    @Override
+    public Equipo getEquipoById(int id) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Equipo equipo = parseRegistro(registro);
+                if (equipo.getId() == id) {
+                    return equipo;
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return null;
+    }
+
 
     private Equipo parseRegistro(CharBuffer registro) {
         Equipo equipo = new Equipo();

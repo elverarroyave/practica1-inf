@@ -23,7 +23,6 @@ public class ClienteDaoNio implements ClienteDao {
     private final static int LONGITUD_REGISTRO = 165;
     private final static int LONGITUD_ID = 10;
     private final static int LONGITUD_NOMBRE = 20;
-    private final static int LONGITUD_PASSWORD = 20;
     private final static int LONGITUD_DATE = 40;
     private final static int LONGITUD_EMAIL = 30;
     private final static int LONGITUD_ADRESS = 30;
