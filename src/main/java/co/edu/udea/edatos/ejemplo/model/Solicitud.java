@@ -1,21 +1,56 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-import java.util.ArrayList;
 
 public class Solicitud {
 
     private int id;
+    private boolean state;
     private String receptionDate;
-    private int idInEmployee;
-    private int idCleinteOwner;
-    private ArrayList<Equipo> equipos;
-    private float totalPay;
-    private float totalSpend;
-    private float totalNet;
-    private String returnDate;
-    private int idOutEmployee;
-    private String description;
-    private int chargeEmployee;
+    private int idEquipo;
+    private int idClienteOwner;
 
-    //Falta generar gets and setters y constructores, hay que sobrecargar
+    public Solicitud() {
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean getState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
+    public String receptionDate() {
+        return receptionDate;
+    }
+
+    public void receptionDate(String date) {
+        this.receptionDate = date;
+    }
+
+    public int getIdEquipo() {
+        return idEquipo;
+    }
+
+    public void setIdEquipo(int idEquipo) {
+        this.idEquipo = idEquipo;
+    }
+
+    public int getIdClienteOwner() {
+        return idClienteOwner;
+    }
+
+    public void setIdClienteOwner(int idClienteOwner) {
+        this.idClienteOwner = idClienteOwner;
+    }
+
 }
