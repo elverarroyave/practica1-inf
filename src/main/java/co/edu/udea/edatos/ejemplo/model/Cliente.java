@@ -9,6 +9,10 @@ public class Cliente {
     private String adress;
     private String numberPhone;
 
+    public Cliente() {
+
+    }
+
     public Cliente(int id, String name, String lastName, String dateBorn, String email, String adress, String numberPhone) {
         this.id = id;
         this.name = name;
