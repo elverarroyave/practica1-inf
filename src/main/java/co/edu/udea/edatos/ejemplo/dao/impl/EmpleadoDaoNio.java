@@ -101,22 +101,22 @@ public class EmpleadoDaoNio implements EmpleadoDao {
         registro = registro.slice();
 
         String born = registro.subSequence(0, LONGITUD_DATE).toString().trim();
-        empleado.setPassword(born);
+        empleado.setDateBorn(born);
         registro.position(LONGITUD_DATE);
         registro = registro.slice();
 
         String email = registro.subSequence(0, LONGITUD_EMAIL).toString().trim();
-        empleado.setPassword(email);
+        empleado.setEmail(email);
         registro.position(LONGITUD_EMAIL);
         registro = registro.slice();
 
         String adress = registro.subSequence(0, LONGITUD_ADRESS).toString().trim();
-        empleado.setPassword(adress);
+        empleado.setAdress(adress);
         registro.position(LONGITUD_ADRESS);
         registro = registro.slice();
 
         String number = registro.subSequence(0, LONGITUD_NUMBER).toString().trim();
-        empleado.setPassword(number);
+        empleado.setNumberPhone(number);
 
         return empleado;
     }
