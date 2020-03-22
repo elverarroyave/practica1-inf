@@ -5,13 +5,13 @@ public class Equipo {
     private int id;
     private String brand;
     private String model;
-    private String pcOwner;
+    private int pcOwner;
 
     public Equipo(){
 
     }
 
-    public Equipo(int id, String brand, String model, String pcOwner) {
+    public Equipo(int id, String brand, String model, int pcOwner) {
         this.id = id;
         this.brand = brand;
         this.model = model;
@@ -42,11 +42,11 @@ public class Equipo {
         this.model = model;
     }
 
-    public String getPcOwner() {
+    public int getPcOwner() {
         return pcOwner;
     }
 
-    public void setPcOwner(String pcOwner) {
+    public void setPcOwner(int pcOwner) {
         this.pcOwner = pcOwner;
     }
 }

@@ -2,8 +2,8 @@ package co.edu.udea.edatos.ejemplo.dao;
 
 import co.edu.udea.edatos.ejemplo.model.Cliente;
 
-public interface ClienteDAO{
+public interface ClienteDao {
 
-    void guardarCliente(Cliente cliente);
+    public void guardar(Cliente cliente);
 
 }

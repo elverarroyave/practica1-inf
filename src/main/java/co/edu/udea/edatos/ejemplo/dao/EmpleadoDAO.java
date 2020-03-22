@@ -2,7 +2,8 @@ package co.edu.udea.edatos.ejemplo.dao;
 
 import co.edu.udea.edatos.ejemplo.model.Empleado;
 
-public interface EmpleadoDAO {
+public interface EmpleadoDao {
 
-    void guardarEmpleado(Empleado empleado);
+    public void guardar(Empleado empleado);
+
 }

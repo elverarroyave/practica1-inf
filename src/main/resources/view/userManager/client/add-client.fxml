@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="444.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.RegistrarClienteController">
+<AnchorPane prefHeight="444.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.ClienteController">
    <children>
       <VBox layoutX="6.0" layoutY="6.0" prefHeight="393.0" prefWidth="480.0">
          <children>
@@ -61,7 +61,7 @@
             </GridPane>
          </children>
       </VBox>
-      <Button fx:id="btnGuardar" layoutX="310.0" layoutY="387.0" mnemonicParsing="false" onAction="#addClient" text="Guardar" />
+      <Button fx:id="btnGuardar" layoutX="310.0" layoutY="387.0" mnemonicParsing="false" onAction="#create" text="Guardar" />
       <Button layoutX="380.0" layoutY="387.0" mnemonicParsing="false" text="Descartar" />
    </children>
 </AnchorPane>
