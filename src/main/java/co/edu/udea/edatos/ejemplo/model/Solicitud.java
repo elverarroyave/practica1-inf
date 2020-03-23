@@ -29,11 +29,11 @@ public class Solicitud {
         this.state = state;
     }
 
-    public String receptionDate() {
+    public String getReceptionDate() {
         return receptionDate;
     }
 
-    public void receptionDate(String date) {
+    public void setReceptionDate(String date) {
         this.receptionDate = date;
     }
 
