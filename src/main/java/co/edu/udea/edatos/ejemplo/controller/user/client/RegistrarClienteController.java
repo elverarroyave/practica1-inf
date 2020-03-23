@@ -28,7 +28,7 @@ public class RegistrarClienteController {
 
     ClienteBsn clienteBsn = new ClienteBsn();
 
-    public void addClient(){
+    public void create(){
 
         //Capturamos los datos de la vista
 

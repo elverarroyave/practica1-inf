@@ -28,7 +28,7 @@ public class RegistrarEmpleadoController {
 
     EmpleadoBsn empleadoBsn = new EmpleadoBsn();
 
-    public void addEmployee(){
+    public void create(){
         String name = txtName.getText();
         int id = Integer.parseInt(txtId.getText());
         String lastName = txtLastName.getText();
