@@ -87,7 +87,6 @@ public class ComponentDaoNio implements ComponentDao {
         return null;
     }
 
-
     private Component parseRegistro(CharBuffer registro) {
         Component component = new Component();
 

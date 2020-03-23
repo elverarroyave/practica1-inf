@@ -20,7 +20,7 @@ import static java.nio.file.StandardOpenOption.APPEND;
 
 public class EquipoDaoNio implements EquipoDao {
 
-    private final static int LONGITUD_REGISTRO = 70;
+    private final static int LONGITUD_REGISTRO = 80;
     private final static int LONGITUD_ID = 10;
     private final static int LONGITUD_BRAND = 20;
     private final static int LONGITUD_MODEL = 40;
@@ -69,6 +69,23 @@ public class EquipoDaoNio implements EquipoDao {
         return equipos;
     }
 
+    public List<Equipo> findAll() {
+        List<Equipo> equipos = new ArrayList<>();
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Equipo equipo = parseRegistro(registro);
+                equipos.add(equipo);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return equipos;
+    }
+
     @Override
     public Equipo getEquipoById(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
@@ -104,10 +121,10 @@ public class EquipoDaoNio implements EquipoDao {
 
         String model = registro.subSequence(0, LONGITUD_MODEL).toString().trim();
         equipo.setModel(model);
-        registro.position(LONGITUD_BRAND);
+        registro.position(LONGITUD_MODEL);
         registro = registro.slice();
 
-        String owner = registro.subSequence(0, LONGITUD_MODEL).toString().trim();
+        String owner = registro.subSequence(0, LONGITUD_ID).toString().trim();
         equipo.setPcOwner(Integer.parseInt(owner));
         return equipo;
     }
