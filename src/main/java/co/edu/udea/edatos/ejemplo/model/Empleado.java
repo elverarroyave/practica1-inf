@@ -12,6 +12,10 @@ public class Empleado {
     private String adress;
     private String numberPhone;
 
+    public Empleado() {
+
+    }
+
     public Empleado(int id, String name, String lastName, String user, String password, String dateBorn, String email, String adress, String numberPhone) {
         this.id = id;
         this.name = name;

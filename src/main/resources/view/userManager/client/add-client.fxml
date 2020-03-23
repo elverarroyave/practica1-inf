@@ -61,7 +61,7 @@
             </GridPane>
          </children>
       </VBox>
-      <Button fx:id="btnGuardar" layoutX="310.0" layoutY="387.0" mnemonicParsing="false" onAction="#addClient" text="Guardar" />
+      <Button fx:id="btnGuardar" layoutX="310.0" layoutY="387.0" mnemonicParsing="false" onAction="#create" text="Guardar" />
       <Button layoutX="380.0" layoutY="387.0" mnemonicParsing="false" text="Descartar" />
    </children>
 </AnchorPane>
