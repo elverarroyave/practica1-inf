@@ -4,11 +4,20 @@ import co.edu.udea.edatos.ejemplo.bsn.ClienteBsn;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+
+import java.io.IOException;
 
 
 public class ClienteController {
+
+    @FXML
+    private AnchorPane editClient;
 
     @FXML
     private TextField txtId;
@@ -62,6 +71,18 @@ public class ClienteController {
         vaciarCampos();
     }
 
+    public void btnEditUser(){
+        try{
+            AnchorPane edit = FXMLLoader.load(getClass().getClassLoader().getResource("view/userManager/client/edit-client.fxml"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void edit(){
+
+    }
 
 
 }

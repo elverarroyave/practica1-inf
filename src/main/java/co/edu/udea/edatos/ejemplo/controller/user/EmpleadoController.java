@@ -4,10 +4,18 @@ import co.edu.udea.edatos.ejemplo.bsn.EmpleadoBsn;
 import co.edu.udea.edatos.ejemplo.model.Empleado;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+
+import java.io.IOException;
 
 public class EmpleadoController {
+
+    @FXML
+    public AnchorPane editEmployee;
 
     @FXML
     private TextField txtId;
@@ -44,11 +52,6 @@ public class EmpleadoController {
         empleadoBsn.registraEmpleado(empleado);
 
         confirm();
-
-
-
-
-
     }
 
     private void vaciarCampos(){
@@ -72,6 +75,20 @@ public class EmpleadoController {
         alert.showAndWait();
 
         vaciarCampos();
+    }
+
+    public void btnEditUser(){
+        try{
+            AnchorPane edit = FXMLLoader.load(getClass().getClassLoader().getResource("view/userManager/employee/edit-employee.fxml"));
+            editEmployee.setVisible(false);
+            edit.setVisible(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void edit(){
+
     }
 
 }
