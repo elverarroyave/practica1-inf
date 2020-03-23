@@ -53,6 +53,7 @@ public class ClienteDaoNio implements ClienteDao {
         }
     }
 
+    @Override
     public List<Cliente> findAll() {
         List<Cliente> clientes = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
@@ -70,6 +71,24 @@ public class ClienteDaoNio implements ClienteDao {
         return clientes;
     }
 
+    @Override
+    public Cliente findById(int id) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Cliente cliente = parseRegistro(registro);
+                if (cliente.getId() == id) {
+                    return cliente;
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return null;
+    }
 
     private Cliente parseRegistro(CharBuffer registro) {
         Cliente cliente = new Cliente();
