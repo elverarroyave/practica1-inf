@@ -49,4 +49,10 @@ public class Equipo {
     public void setPcOwner(int pcOwner) {
         this.pcOwner = pcOwner;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Id: %s Brand: %s Model: %s", id, brand, model);
+    }
+
 }

@@ -35,4 +35,9 @@ public class Component {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Id: %s Producer: %s Description: %s", id, producer, description);
+    }
+
 }
