@@ -1,6 +1,5 @@
 package co.edu.udea.edatos.ejemplo.dao.impl;
 
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -13,22 +12,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.edu.udea.edatos.ejemplo.dao.EquipoDao;
-import co.edu.udea.edatos.ejemplo.model.Equipo;
+import co.edu.udea.edatos.ejemplo.dao.TaskDao;
+import co.edu.udea.edatos.ejemplo.model.Task;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
-public class EquipoDaoNio implements EquipoDao {
+public class TaskDaoNio implements TaskDao {
 
     private final static int LONGITUD_REGISTRO = 80;
     private final static int LONGITUD_ID = 10;
-    private final static int LONGITUD_BRAND = 20;
-    private final static int LONGITUD_MODEL = 40;
+    private final static int LONGITUD_NAME = 20;
+    private final static int LONGITUD_DESCRIPTION = 40;
+    private final static int LONGITUD_PAYMENT = 10;
 
-    private final static String NOMBRE_ARCHIVO = "equipos";
+    private final static String NOMBRE_ARCHIVO = "tareas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    public EquipoDaoNio() {
+    public TaskDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -39,8 +39,8 @@ public class EquipoDaoNio implements EquipoDao {
     }
 
     @Override
-    public void guardar(Equipo equipo) {
-        String registroDireccion = parseEquipo(equipo);
+    public void guardar(Task task) {
+        String registroDireccion = parseTask(task);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
         try (FileChannel fileChannel = FileChannel.open(ARCHIVO, APPEND)) {
@@ -50,52 +50,34 @@ public class EquipoDaoNio implements EquipoDao {
         }
     }
 
-    public List<Equipo> getEquipoByUserId(int userId) {
-        List<Equipo> equipos = new ArrayList<>();
+    @Override
+    public List<Task> findAll() {
+        List<Task> tasks = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Equipo equipo = parseRegistro(registro);
-                if (equipo.getPcOwner() == userId) {
-                    equipos.add(equipo);
-                }
+                Task task = parseRegistro(registro);
+                tasks.add(task);
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return equipos;
-    }
-
-    public List<Equipo> findAll() {
-        List<Equipo> equipos = new ArrayList<>();
-        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
-            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Equipo equipo = parseRegistro(registro);
-                equipos.add(equipo);
-                buffer.flip();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return equipos;
+        return tasks;
     }
 
     @Override
-    public Equipo getEquipoById(int id) {
+    public Task findById(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Equipo equipo = parseRegistro(registro);
-                if (equipo.getId() == id) {
-                    return equipo;
+                Task task = parseRegistro(registro);
+                if (task.getId() == id) {
+                    return task;
                 }
                 buffer.flip();
             }
@@ -106,36 +88,39 @@ public class EquipoDaoNio implements EquipoDao {
     }
 
 
-    private Equipo parseRegistro(CharBuffer registro) {
-        Equipo equipo = new Equipo();
+    private Task parseRegistro(CharBuffer registro) {
+        Task task = new Task();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();
-        equipo.setId(Integer.parseInt(identificacion));
+        task.setId(Integer.parseInt(identificacion));
         registro.position(LONGITUD_ID);
         registro = registro.slice();
 
-        String brand = registro.subSequence(0, LONGITUD_BRAND).toString().trim();
-        equipo.setBrand(brand);
-        registro.position(LONGITUD_BRAND);
+        String name = registro.subSequence(0, LONGITUD_NAME).toString().trim();
+        task.setName(name);
+        registro.position(LONGITUD_NAME);
         registro = registro.slice();
 
-        String model = registro.subSequence(0, LONGITUD_MODEL).toString().trim();
-        equipo.setModel(model);
-        registro.position(LONGITUD_MODEL);
+        String description = registro.subSequence(0, LONGITUD_DESCRIPTION).toString().trim();
+        task.setDescription(description);
+        registro.position(LONGITUD_DESCRIPTION);
         registro = registro.slice();
 
-        String owner = registro.subSequence(0, LONGITUD_ID).toString().trim();
-        equipo.setPcOwner(Integer.parseInt(owner));
-        return equipo;
+        String payment = registro.subSequence(0, LONGITUD_PAYMENT).toString().trim();
+        task.setPayment(Double.parseDouble(payment));
+        registro.position(LONGITUD_PAYMENT);
+        registro = registro.slice();
+
+        return task;
     }
 
 
-    private String parseEquipo(Equipo equipo) {
+    private String parseTask(Task task) {
         StringBuilder sb = new StringBuilder();
-        sb.append(ajustarCampo(String.valueOf(equipo.getId()), LONGITUD_ID))
-                .append(ajustarCampo(equipo.getBrand(), LONGITUD_BRAND))
-                .append(ajustarCampo(equipo.getModel(), LONGITUD_MODEL))
-                .append(ajustarCampo(String.valueOf(equipo.getPcOwner()), LONGITUD_ID));
+        sb.append(ajustarCampo(String.valueOf(task.getId()), LONGITUD_ID))
+                .append(ajustarCampo(task.getName(), LONGITUD_NAME))
+                .append(ajustarCampo(task.getDescription(), LONGITUD_DESCRIPTION))
+                .append(ajustarCampo(String.valueOf(task.getPayment()), LONGITUD_PAYMENT));
         return sb.toString();
     }
 

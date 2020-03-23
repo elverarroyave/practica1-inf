@@ -78,4 +78,9 @@ public class Cliente {
     public void setNumberPhone(String numberPhone) {
         this.numberPhone = numberPhone;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Id: %s Name: %s", id, name);
+    }
 }

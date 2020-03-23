@@ -6,7 +6,7 @@ import co.edu.udea.edatos.ejemplo.model.Factura;
 
 public class FacturaBsn {
 
-    FacturaDao repository = new FacturaDaoNio();
+    static FacturaDao repository = new FacturaDaoNio();
 
     public void guardar(Factura factura) {
         repository.guardar(factura);

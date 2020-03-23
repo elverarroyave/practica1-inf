@@ -49,7 +49,33 @@ public class ContenedorPrincipalController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void mnuAddComponent(){
+        try {
+            AnchorPane addComponent = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/equipo/add-component.fxml")));
+            contenedorPrincipal.setCenter(addComponent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuAddEquipo(){
+        try {
+            AnchorPane addEquipo = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/equipo/add-equipo.fxml")));
+            contenedorPrincipal.setCenter(addEquipo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuAddEquipoComponent(){
+        try {
+            AnchorPane addComponentEquipo = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/equipo/add-equipo-component.fxml")));
+            contenedorPrincipal.setCenter(addComponentEquipo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -6,7 +6,7 @@ import co.edu.udea.edatos.ejemplo.model.Solicitud;
 
 public class SolicitudBsn {
 
-    SolicitudDao repository = new SolicitudeDaoNio();
+    static SolicitudDao repository = new SolicitudeDaoNio();
 
     public void guardar(Solicitud solicitud) {
         repository.guardar(solicitud);
