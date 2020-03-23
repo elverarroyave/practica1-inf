@@ -1,9 +1,10 @@
-package co.edu.udea.edatos.ejemplo.controller;
+package co.edu.udea.edatos.ejemplo.controller.user;
 
 import co.edu.udea.edatos.ejemplo.bsn.EmpleadoBsn;
 import co.edu.udea.edatos.ejemplo.model.Empleado;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 public class EmpleadoController {
@@ -41,7 +42,36 @@ public class EmpleadoController {
         String numberPhone = txtNumberPhone.getText();
         Empleado empleado = new Empleado(id,name,lastName,idEmployee,passWord,bornDate,email,adress,numberPhone);
         empleadoBsn.registraEmpleado(empleado);
-        System.out.println("Registramos empleado con nombre "+ name +" y identificacion " + txtId.getText());
+
+        confirm();
+
+
+
+
+
+    }
+
+    private void vaciarCampos(){
+        txtId.clear();
+        txtName.clear();
+        txtLastName.clear();
+        txtIdEmployee.clear();
+        txtPassWord.clear();
+        txtBornDate.clear();
+        txtEmail.clear();
+        txtAdress.clear();
+        txtNumberPhone.clear();
+
+    }
+
+    private void confirm(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Operacion");
+        alert.setHeaderText("Guardar usuario");
+        alert.setContentText("Usuario almacenado correctamente");
+        alert.showAndWait();
+
+        vaciarCampos();
     }
 
 }
