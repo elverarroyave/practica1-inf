@@ -54,6 +54,7 @@ public class EmpleadoDaoNio implements EmpleadoDao {
         }
     }
 
+    @Override
     public List<Empleado> findAll() {
         List<Empleado> empleados = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
@@ -71,6 +72,24 @@ public class EmpleadoDaoNio implements EmpleadoDao {
         return empleados;
     }
 
+    @Override
+    public Empleado findById(int id) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Empleado empleado = parseRegistro(registro);
+                if (empleado.getId() == id) {
+                    return empleado;
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return null;
+    }
 
     private Empleado parseRegistro(CharBuffer registro) {
         Empleado empleado = new Empleado();

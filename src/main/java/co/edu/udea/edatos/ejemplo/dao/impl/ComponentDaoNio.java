@@ -1,5 +1,6 @@
 package co.edu.udea.edatos.ejemplo.dao.impl;
 
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -9,24 +10,25 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import co.edu.udea.edatos.ejemplo.dao.FacturaDao;
-import co.edu.udea.edatos.ejemplo.model.Factura;
+import co.edu.udea.edatos.ejemplo.dao.ComponentDao;
+import co.edu.udea.edatos.ejemplo.model.Component;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
-public class FacturaDaoNio implements FacturaDao {
+public class ComponentDaoNio implements ComponentDao {
 
-    private final static int LONGITUD_REGISTRO = 100;
+    private final static int LONGITUD_REGISTRO = 70;
     private final static int LONGITUD_ID = 10;
-    private final static int LONGITUD_PAYMENT = 20;
-    private final static int LONGITUD_DESCRIPTION = 20;
-    private final static int LONGITUD_DATE = 40;
+    private final static int LONGITUD_PRODUCER = 20;
+    private final static int LONGITUD_DESCRIPTION = 40;
 
-    private final static String NOMBRE_ARCHIVO = "facturas";
+    private final static String NOMBRE_ARCHIVO = "components";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    public FacturaDaoNio() {
+    public ComponentDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -37,8 +39,8 @@ public class FacturaDaoNio implements FacturaDao {
     }
 
     @Override
-    public void guardar(Factura factura) {
-        String registroDireccion = parseFactura(factura);
+    public void guardar(Component component) {
+        String registroDireccion = parseComponent(component);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
         try (FileChannel fileChannel = FileChannel.open(ARCHIVO, APPEND)) {
@@ -49,15 +51,33 @@ public class FacturaDaoNio implements FacturaDao {
     }
 
     @Override
-    public Factura getFacturaBySolicitudeId(int id) {
+    public List<Component> findAll() {
+        List<Component> components = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Factura factura = parseRegistro(registro);
-                if (factura.getSolicitudeId() == id) {
-                    return factura;
+                Component component = parseRegistro(registro);
+                components.add(component);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return components;
+    }
+
+    @Override
+    public Component findById(int id) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Component component = parseRegistro(registro);
+                if (component.getId() == id) {
+                    return component;
                 }
                 buffer.flip();
             }
@@ -67,37 +87,30 @@ public class FacturaDaoNio implements FacturaDao {
         return null;
     }
 
-    private Factura parseRegistro(CharBuffer registro) {
-        Factura factura = new Factura();
+    private Component parseRegistro(CharBuffer registro) {
+        Component component = new Component();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();
-        factura.setId(Integer.parseInt(identificacion));
+        component.setId(Integer.parseInt(identificacion));
         registro.position(LONGITUD_ID);
         registro = registro.slice();
 
-        String payment = registro.subSequence(0, LONGITUD_PAYMENT).toString().trim();
-        factura.setPayment(Double.parseDouble(payment));
-        registro.position(LONGITUD_PAYMENT);
-        registro = registro.slice();
-        
-        String description = registro.subSequence(0, LONGITUD_DESCRIPTION).toString().trim();
-        factura.setDescription(description);
-        registro.position(LONGITUD_DESCRIPTION);
+        String producer = registro.subSequence(0, LONGITUD_PRODUCER).toString().trim();
+        component.setProducer(producer);
+        registro.position(LONGITUD_PRODUCER);
         registro = registro.slice();
 
-        String solicitudeId = registro.subSequence(0, LONGITUD_ID).toString().trim();
-        factura.setId(Integer.parseInt(solicitudeId));
-       
-        return factura;
+        String description = registro.subSequence(0, LONGITUD_DESCRIPTION).toString().trim();
+        component.setDescription(description);
+
+        return component;
     }
 
-    private String parseFactura(Factura factura) {
+    private String parseComponent(Component component) {
         StringBuilder sb = new StringBuilder();
-        sb.append(ajustarCampo(String.valueOf(factura.getId()), LONGITUD_ID))
-                .append(ajustarCampo(String.valueOf(factura.getPayment()), LONGITUD_PAYMENT))
-                .append(ajustarCampo(factura.getDescription(), LONGITUD_DESCRIPTION))
-                .append(ajustarCampo(factura.getReturnDate(), LONGITUD_DATE))
-                .append(ajustarCampo(String.valueOf(factura.getId()), LONGITUD_ID));
+        sb.append(ajustarCampo(String.valueOf(component.getId()), LONGITUD_ID))
+                .append(ajustarCampo(component.getProducer(), LONGITUD_PRODUCER))
+                .append(ajustarCampo(component.getDescription(), LONGITUD_DESCRIPTION));
         return sb.toString();
     }
 
@@ -107,5 +120,5 @@ public class FacturaDaoNio implements FacturaDao {
         }
         return String.format("%1$-" + longitud + "s", campo);
     }
-
 }
+
