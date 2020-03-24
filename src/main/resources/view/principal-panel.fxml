@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane fx:id="contenedorPrincipal" prefHeight="401.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.ContenedorPrincipalController">
      <top>
@@ -44,4 +46,24 @@
           </menus>
         </MenuBar>
      </top>
+   <center>
+      <Label text="Practica 1 Estructuras Físicas de la información - UdeA" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold Italic" size="19.0" />
+         </font>
+      </Label>
+   </center>
+   <bottom>
+      <Label prefHeight="37.0" prefWidth="402.0" text="Desarrollado por: Elver Andres Arroyave - Cristian Serna Betancur " BorderPane.alignment="CENTER_RIGHT">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets bottom="20.0" right="20.0" />
+         </padding>
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+   </bottom>
   </BorderPane>

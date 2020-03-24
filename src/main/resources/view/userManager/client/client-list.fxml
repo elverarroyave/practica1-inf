@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="471.0" prefWidth="482.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.user.client.ListClientController">
+<AnchorPane prefHeight="471.0" prefWidth="482.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.user.ClienteController">
    <children>
       <Pane prefHeight="78.0" prefWidth="482.0">
          <children>
@@ -24,7 +24,7 @@
                 <TableColumn prefWidth="191.0" text="Apellido" />
               </columns>
             </TableView>
-            <Button layoutX="-3.0" layoutY="334.0" mnemonicParsing="false" text="Editar" />
+            <Button layoutX="-3.0" layoutY="334.0" mnemonicParsing="false" onAction="#btnEditUser" text="Editar" />
             <Button layoutX="55.0" layoutY="334.0" mnemonicParsing="false" text="Borrar" />
             <Button layoutX="382.0" layoutY="334.0" mnemonicParsing="false" text="Salir" />
          </children>

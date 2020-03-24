@@ -1,12 +1,21 @@
-package co.edu.udea.edatos.ejemplo.controller;
+package co.edu.udea.edatos.ejemplo.controller.user;
 
 import co.edu.udea.edatos.ejemplo.bsn.EmpleadoBsn;
 import co.edu.udea.edatos.ejemplo.model.Empleado;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+
+import java.io.IOException;
 
 public class EmpleadoController {
+
+    @FXML
+    public AnchorPane editEmployee;
 
     @FXML
     private TextField txtId;
@@ -41,7 +50,45 @@ public class EmpleadoController {
         String numberPhone = txtNumberPhone.getText();
         Empleado empleado = new Empleado(id,name,lastName,idEmployee,passWord,bornDate,email,adress,numberPhone);
         empleadoBsn.registraEmpleado(empleado);
-        System.out.println("Registramos empleado con nombre "+ name +" y identificacion " + txtId.getText());
+
+        confirm();
+    }
+
+    private void vaciarCampos(){
+        txtId.clear();
+        txtName.clear();
+        txtLastName.clear();
+        txtIdEmployee.clear();
+        txtPassWord.clear();
+        txtBornDate.clear();
+        txtEmail.clear();
+        txtAdress.clear();
+        txtNumberPhone.clear();
+
+    }
+
+    private void confirm(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Operacion");
+        alert.setHeaderText("Guardar usuario");
+        alert.setContentText("Usuario almacenado correctamente");
+        alert.showAndWait();
+
+        vaciarCampos();
+    }
+
+    public void btnEditUser(){
+        try{
+            AnchorPane edit = FXMLLoader.load(getClass().getClassLoader().getResource("view/userManager/employee/edit-employee.fxml"));
+            editEmployee.setVisible(false);
+            edit.setVisible(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void edit(){
+
     }
 
 }

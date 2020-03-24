@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="editClient" prefHeight="444.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.user.ClienteController">
+    <children>
+        <VBox layoutX="6.0" layoutY="6.0" prefHeight="393.0" prefWidth="480.0">
+            <children>
+                <Label text="Editar Cliente" textFill="#2301ff">
+                    <VBox.margin>
+                        <Insets left="20.0" top="10.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font name="System Bold Italic" size="25.0" />
+                    </font>
+                </Label>
+                <Label prefHeight="20.0" prefWidth="121.0" text="Ingrese los datos:">
+                    <VBox.margin>
+                        <Insets left="20.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font name="System Italic" size="14.0" />
+                    </font>
+                </Label>
+                <GridPane prefHeight="278.0" prefWidth="475.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="255.0" minWidth="10.0" prefWidth="199.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="314.0" minWidth="10.0" prefWidth="211.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <VBox.margin>
+                        <Insets left="40.0" right="40.0" top="10.0" />
+                    </VBox.margin>
+                    <children>
+                        <Label text="Identificación:" />
+                        <Label text="Nombres:" GridPane.rowIndex="1" />
+                        <Label text="Apellidos:" GridPane.rowIndex="2" />
+                        <Label text="Fecha de nacimiento(dd-mm-aaaa):" GridPane.rowIndex="3" />
+                        <Label text="Email:" GridPane.rowIndex="4" />
+                        <Label text="Dirección:" GridPane.rowIndex="5" />
+                        <Label text="Teléfono:" GridPane.rowIndex="6" />
+                        <TextField fx:id="txtId" prefHeight="25.0" prefWidth="241.0" GridPane.columnIndex="1" />
+                        <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtLastName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="txtBornDate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField fx:id="txtAdress" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <TextField fx:id="txtNumberPhone" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    </children>
+                </GridPane>
+            </children>
+        </VBox>
+        <Button fx:id="btnGuardar" layoutX="310.0" layoutY="387.0" mnemonicParsing="false" onAction="#edit" text="Guardar" />
+        <Button layoutX="380.0" layoutY="387.0" mnemonicParsing="false" text="Descartar" />
+    </children>
+</AnchorPane>
