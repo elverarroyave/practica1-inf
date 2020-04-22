@@ -1,14 +1,16 @@
 package co.edu.udea.edatos.ejemplo.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.model.Equipo;
 
 public interface EquipoDao {
 
-    public void guardar(Equipo equipo);
-    public Equipo getEquipoById(int id);
-    public List<Equipo> getEquipoByUserId(int userId);
-    public List<Equipo> findAll();
+    Equipo create(Equipo equipo);
+    Optional<Equipo> read(int id);
+    void update(Equipo equipo);
+    void destroy(int id);
+    List<Equipo> findAll();
 
 }
