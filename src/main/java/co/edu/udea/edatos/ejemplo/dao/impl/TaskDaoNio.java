@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.TaskDao;
 import co.edu.udea.edatos.ejemplo.model.Task;
@@ -39,7 +40,7 @@ public class TaskDaoNio implements TaskDao {
     }
 
     @Override
-    public void guardar(Task task) {
+    public Task create(Task task) {
         String registroDireccion = parseTask(task);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
@@ -48,6 +49,7 @@ public class TaskDaoNio implements TaskDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        return task;
     }
 
     @Override
@@ -69,7 +71,7 @@ public class TaskDaoNio implements TaskDao {
     }
 
     @Override
-    public Task findById(int id) {
+    public Optional<Task> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
@@ -77,14 +79,39 @@ public class TaskDaoNio implements TaskDao {
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
                 Task task = parseRegistro(registro);
                 if (task.getId() == id) {
-                    return task;
+                    return Optional.of(task);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return null;
+        return Optional.empty();
+    }
+
+    @Override
+    public void update(Task cliente) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Task dbClient = parseRegistro(registro);
+                if (dbClient.getId() == cliente.getId()) {
+                    String clienteToUpdate = parseTask(cliente);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    @Override
+    public void destroy(int id) {
+
     }
 
 

@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -43,12 +44,33 @@ public class EmpleadoDaoNio implements EmpleadoDao {
     }
 
     @Override
-    public void guardar(Empleado empleado) {
+    public Empleado create(Empleado empleado) {
         String registroDireccion = parseEmpleado(empleado);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
         try (FileChannel fileChannel = FileChannel.open(ARCHIVO, APPEND)) {
             fileChannel.write(byteBuffer);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return empleado;
+    }
+
+    @Override
+    public void update(Empleado empleado) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Empleado dbClient = parseRegistro(registro);
+                if (dbClient.getId() == empleado.getId()) {
+                    String clienteToUpdate = parseEmpleado(empleado);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
+                }
+                buffer.flip();
+            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -73,7 +95,7 @@ public class EmpleadoDaoNio implements EmpleadoDao {
     }
 
     @Override
-    public Empleado findById(int id) {
+    public Optional<Empleado> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
@@ -81,16 +103,20 @@ public class EmpleadoDaoNio implements EmpleadoDao {
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
                 Empleado empleado = parseRegistro(registro);
                 if (empleado.getId() == id) {
-                    return empleado;
+                    return Optional.of(empleado);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
+    @Override
+    public void destroy(int id) {
+
+    }
     private Empleado parseRegistro(CharBuffer registro) {
         Empleado empleado = new Empleado();
 

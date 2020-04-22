@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -42,7 +43,7 @@ public class ClienteDaoNio implements ClienteDao {
     }
 
     @Override
-    public void guardar(Cliente cliente) {
+    public Cliente create(Cliente cliente) {
         String registroDireccion = parseCliente(cliente);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
@@ -51,6 +52,31 @@ public class ClienteDaoNio implements ClienteDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        return cliente;
+    }
+
+    @Override
+    public void update(Cliente cliente) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Cliente dbClient = parseRegistro(registro);
+                if (dbClient.getId() == cliente.getId()) {
+                    String clienteToUpdate = parseCliente(cliente);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    @Override
+    public void destroy(int  id) {
     }
 
     @Override
@@ -72,7 +98,7 @@ public class ClienteDaoNio implements ClienteDao {
     }
 
     @Override
-    public Cliente findById(int id) {
+    public Optional<Cliente> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
@@ -80,14 +106,14 @@ public class ClienteDaoNio implements ClienteDao {
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
                 Cliente cliente = parseRegistro(registro);
                 if (cliente.getId() == id) {
-                    return cliente;
+                    return Optional.of(cliente);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     private Cliente parseRegistro(CharBuffer registro) {

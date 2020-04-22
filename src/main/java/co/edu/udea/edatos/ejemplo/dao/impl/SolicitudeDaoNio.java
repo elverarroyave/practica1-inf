@@ -12,8 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.SolicitudDao;
+import co.edu.udea.edatos.ejemplo.model.Cliente;
 import co.edu.udea.edatos.ejemplo.model.Solicitud;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -41,7 +43,7 @@ public class SolicitudeDaoNio implements SolicitudDao {
     }
 
     @Override
-    public void guardar(Solicitud solicitud) {
+    public Solicitud create(Solicitud solicitud) {
         String registroDireccion = parseSolicitud(solicitud);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
@@ -50,88 +52,71 @@ public class SolicitudeDaoNio implements SolicitudDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        return solicitud;
     }
 
-
     @Override
-    public List<Solicitud> getSolicitudesByIncompleteState() {
-        List<Solicitud> solicitudes = new ArrayList<>();
+    public Optional<Solicitud> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud solicitud = parseRegistro(registro);
-                if (!solicitud.getState()) {
-                    solicitudes.add(solicitud);
+                Solicitud cliente = parseRegistro(registro);
+                if (cliente.getId() == id) {
+                    return Optional.of(cliente);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return solicitudes;
+        return Optional.empty();
     }
 
     @Override
-    public List<Solicitud> getSolicitudesByCompleteState() {
-        List<Solicitud> solicitudes = new ArrayList<>();
+    public void update(Solicitud cliente) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud solicitud = parseRegistro(registro);
-                if (solicitud.getState()) {
-                    solicitudes.add(solicitud);
+                Solicitud dbClient = parseRegistro(registro);
+                if (dbClient.getId() == cliente.getId()) {
+                    String clienteToUpdate = parseSolicitud(cliente);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return solicitudes;
     }
 
     @Override
-    public List<Solicitud> getSolicitudesByUserId(int userId) {
-        List<Solicitud> solicituds = new ArrayList<>();
+    public void destroy(int id) {
+
+    }
+
+    @Override
+    public List<Solicitud> findAll() {
+        List<Solicitud> clientes = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud solicitud = parseRegistro(registro);
-                if (solicitud.getIdClienteOwner() == userId) {
-                    solicituds.add(solicitud);
-                }
+                Solicitud cliente = parseRegistro(registro);
+                clientes.add(cliente);
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return solicituds;
+        return clientes;
     }
 
-    @Override
-    public List<Solicitud> getSolicitudesByEquipoId(int equipoId) {
-        List<Solicitud> solicituds = new ArrayList<>();
-        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
-            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud solicitud = parseRegistro(registro);
-                if (solicitud.getIdEquipo() == equipoId) {
-                    solicituds.add(solicitud);
-                }
-                buffer.flip();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return solicituds;
-    }
 
     private Solicitud parseRegistro(CharBuffer registro) {
         Solicitud solicitud = new Solicitud();

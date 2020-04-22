@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.ComponentDao;
 import co.edu.udea.edatos.ejemplo.model.Component;
@@ -39,7 +40,27 @@ public class ComponentDaoNio implements ComponentDao {
     }
 
     @Override
-    public void guardar(Component component) {
+    public void update(Component component) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Component dbClient = parseRegistro(registro);
+                if (dbClient.getId() == component.getId()) {
+                    String clienteToUpdate = parseComponent(component);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    @Override
+    public Component create(Component component) {
         String registroDireccion = parseComponent(component);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
@@ -48,6 +69,7 @@ public class ComponentDaoNio implements ComponentDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        return component;
     }
 
     @Override
@@ -69,7 +91,7 @@ public class ComponentDaoNio implements ComponentDao {
     }
 
     @Override
-    public Component findById(int id) {
+    public Optional<Component> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
@@ -77,14 +99,19 @@ public class ComponentDaoNio implements ComponentDao {
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
                 Component component = parseRegistro(registro);
                 if (component.getId() == id) {
-                    return component;
+                    return Optional.of(component);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return null;
+        return Optional.empty();
+    }
+
+    @Override
+    public void destroy(int id) {
+
     }
 
     private Component parseRegistro(CharBuffer registro) {

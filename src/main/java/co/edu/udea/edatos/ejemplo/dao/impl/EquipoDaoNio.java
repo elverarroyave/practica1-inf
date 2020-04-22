@@ -12,8 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.EquipoDao;
+import co.edu.udea.edatos.ejemplo.model.Cliente;
 import co.edu.udea.edatos.ejemplo.model.Equipo;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -39,7 +41,7 @@ public class EquipoDaoNio implements EquipoDao {
     }
 
     @Override
-    public void guardar(Equipo equipo) {
+    public Equipo create(Equipo equipo) {
         String registroDireccion = parseEquipo(equipo);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
@@ -48,25 +50,27 @@ public class EquipoDaoNio implements EquipoDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        return equipo;
     }
 
-    public List<Equipo> getEquipoByUserId(int userId) {
-        List<Equipo> equipos = new ArrayList<>();
+    @Override
+    public void update(Equipo cliente) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Equipo equipo = parseRegistro(registro);
-                if (equipo.getPcOwner() == userId) {
-                    equipos.add(equipo);
+                Equipo dbClient = parseRegistro(registro);
+                if (dbClient.getId() == cliente.getId()) {
+                    String clienteToUpdate = parseEquipo(cliente);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return equipos;
     }
 
     public List<Equipo> findAll() {
@@ -87,7 +91,7 @@ public class EquipoDaoNio implements EquipoDao {
     }
 
     @Override
-    public Equipo getEquipoById(int id) {
+    public Optional<Equipo> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
@@ -95,16 +99,20 @@ public class EquipoDaoNio implements EquipoDao {
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
                 Equipo equipo = parseRegistro(registro);
                 if (equipo.getId() == id) {
-                    return equipo;
+                    return Optional.of(equipo);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
+    @Override
+    public void destroy(int id) {
+
+    }
 
     private Equipo parseRegistro(CharBuffer registro) {
         Equipo equipo = new Equipo();
