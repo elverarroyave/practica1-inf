@@ -20,7 +20,7 @@ import static java.nio.file.StandardOpenOption.APPEND;
 
 public class EquipoComponentDaoNio implements EquipoComponentDao {
 
-    private final static int LONGITUD_REGISTRO = 20;
+    private final static int LONGITUD_REGISTRO = 30;
     private final static int LONGITUD_ID = 10;
 
     private final static String NOMBRE_ARCHIVO = "equipo_component";
