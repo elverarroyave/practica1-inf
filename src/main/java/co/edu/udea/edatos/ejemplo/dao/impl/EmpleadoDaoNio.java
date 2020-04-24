@@ -12,16 +12,19 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.READ;
 
 
 public class EmpleadoDaoNio implements EmpleadoDao {
 
-    private final static int LONGITUD_REGISTRO = 165;
+    private final static int LONGITUD_REGISTRO = 205;
     private final static int LONGITUD_ID = 10;
     private final static int LONGITUD_NOMBRE = 20;
     private final static int LONGITUD_PASSWORD = 20;
@@ -58,22 +61,23 @@ public class EmpleadoDaoNio implements EmpleadoDao {
 
     @Override
     public void update(Empleado empleado) {
-        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
-            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Empleado dbClient = parseRegistro(registro);
-                if (dbClient.getId() == empleado.getId()) {
-                    String clienteToUpdate = parseEmpleado(empleado);
-                    byte[] by = clienteToUpdate.getBytes();
-                    buffer.put(by);
-                }
-                buffer.flip();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+        //try (FileChannel sbc = FileChannel.open(ARCHIVO, APPEND, READ)) {
+        //    ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+        //    while (sbc.read(buffer) > 0) {
+        //        buffer.rewind();
+        //        CharBuffer registro = Charset.defaultCharset().decode(buffer);
+        //        Empleado dbClient = parseRegistro(registro);
+        //        if (dbClient.getId() == empleado.getId()) {
+        //            String clienteToUpdate = parseEmpleado(empleado);
+        //            byte[] by = clienteToUpdate.getBytes();
+        //            buffer.wrap(by);
+        //            sbc.write(buffer);
+        //        }
+        //        buffer.flip();
+        //    }
+        //} catch (IOException ioe) {
+        //    ioe.printStackTrace();
+        //}
     }
 
     @Override
