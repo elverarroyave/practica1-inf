@@ -19,6 +19,7 @@ public class ComponentBsn {
         Optional<Component> search = repository.read(component.getId());
         if (search.isPresent())
             throw new DuplicateKeyException();
+        repository.create(component);
     }
 
     public void update(Component component) throws Exception {

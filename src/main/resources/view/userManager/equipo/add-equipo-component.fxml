@@ -25,10 +25,12 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label text="Equipo:" />
-                        <Label text="Component:" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="cmbEquipos" onAction="#cmbEquipos_action" prefHeight="27.0" prefWidth="254.0" GridPane.columnIndex="1" />
-                        <ComboBox fx:id="cmbComponents" prefHeight="27.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Equipo:" GridPane.rowIndex="1" />
+                        <Label text="Component:" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="cmbEquipos" onAction="#cmbEquipos_action" prefHeight="27.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cmbComponents" prefHeight="27.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="relation-id:" />
+                  <TextField fx:id="txtId" GridPane.columnIndex="1" />
                     </children>
                 </GridPane>
                 <ButtonBar prefHeight="40.0" prefWidth="200.0">
