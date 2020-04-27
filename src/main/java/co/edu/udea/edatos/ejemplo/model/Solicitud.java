@@ -13,6 +13,14 @@ public class Solicitud {
 
     }
 
+    public Solicitud(int id, boolean state, String receptionDate, int idEquipo, int idClienteOwner) {
+        this.id = id;
+        this.state = state;
+        this.receptionDate = receptionDate;
+        this.idEquipo = idEquipo;
+        this.idClienteOwner = idClienteOwner;
+    }
+
     public int getId() {
         return id;
     }

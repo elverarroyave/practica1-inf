@@ -50,4 +50,9 @@ public class Task {
         this.payment = payment;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Task: %s Payment: %s", name, payment);
+    }
+
 }
