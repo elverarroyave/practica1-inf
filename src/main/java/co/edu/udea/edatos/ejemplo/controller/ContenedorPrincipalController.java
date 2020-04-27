@@ -78,4 +78,21 @@ public class ContenedorPrincipalController {
         }
     }
 
+    public void mnuAddTask(){
+        try {
+            AnchorPane addTask = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/task/add-task.fxml")));
+            contenedorPrincipal.setCenter(addTask);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuListTask(){
+        try {
+            AnchorPane addComponentEquipo = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/task/task-list.fxml")));
+            contenedorPrincipal.setCenter(addComponentEquipo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

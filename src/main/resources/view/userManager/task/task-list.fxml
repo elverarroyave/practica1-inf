@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.task.TaskController">
+
+    <children>
+        <Pane prefHeight="78.0" prefWidth="482.0">
+            <children>
+                <Label layoutX="152.0" layoutY="22.0" text="Lista de Tareas" textFill="#01aaff">
+                    <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+        <Pane layoutX="28.0" layoutY="67.0" prefHeight="391.0" prefWidth="418.0">
+            <children>
+                <TableView fx:id="tblTask" layoutY="-11.0" prefHeight="328.0" prefWidth="495.0">
+                    <columns>
+                        <TableColumn fx:id="clmId" prefWidth="98.0" text="id" />
+                        <TableColumn fx:id="clmName" prefWidth="147.0" text="nombre" />
+                        <TableColumn fx:id="clmDescription" prefWidth="107.0" text="description" />
+                        <TableColumn fx:id="clmPayment" prefWidth="140.0" text="payment" />
+                    </columns>
+                </TableView>
+                <Button layoutX="382.0" layoutY="334.0" mnemonicParsing="false" onAction="#listar" text="Listar" />
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>

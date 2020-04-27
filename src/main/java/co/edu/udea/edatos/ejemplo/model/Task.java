@@ -11,6 +11,13 @@ public class Task {
 
     }
 
+    public Task(int id, String name, String description, Double payment) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.payment = payment;
+    }
+
     public int getId() {
         return id;
     }
