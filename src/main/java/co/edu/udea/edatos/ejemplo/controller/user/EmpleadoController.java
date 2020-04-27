@@ -48,10 +48,32 @@ public class EmpleadoController {
         String email = txtEmail.getText();
         String adress = txtAdress.getText();
         String numberPhone = txtNumberPhone.getText();
-        Empleado empleado = new Empleado(id,name,lastName,idEmployee,passWord,bornDate,email,adress,numberPhone);
-        empleadoBsn.registraEmpleado(empleado);
+        if (name.equals("")
+            || lastName.equals("")
+            || idEmployee.equals("")) {
+            return;
+        }
 
-        confirm();
+        Empleado empleado = new Empleado(id,name,lastName,idEmployee,passWord,bornDate,email,adress,numberPhone);
+        try {
+            empleadoBsn.save(empleado);
+        //    Empleado newEmpleado = new Empleado(
+        //            empleado.getId(),
+        //            "s",
+        //            "s",
+        //            "s",
+        //            "s",
+        //            "s",
+        //            "s",
+        //            "s",
+        //            "s"
+        //    );
+        //    empleadoBsn.update(newEmpleado);
+            confirm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            abort();
+        }
     }
 
     private void vaciarCampos(){
@@ -73,7 +95,15 @@ public class EmpleadoController {
         alert.setHeaderText("Guardar usuario");
         alert.setContentText("Usuario almacenado correctamente");
         alert.showAndWait();
+        vaciarCampos();
+    }
 
+    private void abort(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Operacion");
+        alert.setHeaderText("Guardar usuario");
+        alert.setContentText("Usuario no almacenado");
+        alert.showAndWait();
         vaciarCampos();
     }
 

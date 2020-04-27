@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class EquipoBsn {
+
     private static EquipoDao repository = new EquipoDaoNio();
 
     public void save(Equipo equipo) throws Exception {

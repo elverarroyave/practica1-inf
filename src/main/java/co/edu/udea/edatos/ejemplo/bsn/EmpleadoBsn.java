@@ -31,6 +31,7 @@ public class EmpleadoBsn {
     public Optional<Empleado> findById(int id) {
         return repository.read(id);
     }
+
     public List<Empleado> getAll() {
         return repository.findAll();
     }

@@ -45,8 +45,11 @@ public class ClienteController {
         String adress = txtAdress.getText();
         String numberPhone = txtNumberPhone.getText();
         Cliente cliente = new Cliente(id,name,lastName,bornDate,email,adress,numberPhone);
-        clienteBsn.registrarCliente(cliente);
-
+        try {
+            clienteBsn.save(cliente);
+        } catch (Exception e) {
+            System.out.println("Este id ya exise, por favor ingrese otro id");
+        }
         confirm();
     }
 
