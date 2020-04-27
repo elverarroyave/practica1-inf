@@ -1,5 +1,7 @@
 package co.edu.udea.edatos.ejemplo.dao.impl;
 
+import co.edu.udea.edatos.ejemplo.dao.SolicitudTaskDao;
+import co.edu.udea.edatos.ejemplo.model.SolicitudTask;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,25 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import co.edu.udea.edatos.ejemplo.dao.SolicitudDao;
-import co.edu.udea.edatos.ejemplo.model.Cliente;
-import co.edu.udea.edatos.ejemplo.model.Solicitud;
-
 import static java.nio.file.StandardOpenOption.APPEND;
 
-public class SolicitudeDaoNio implements SolicitudDao {
+public class SolicitudTaskDaoNio implements SolicitudTaskDao {
 
-    private final static int LONGITUD_REGISTRO = 60;
+    private final static int LONGITUD_REGISTRO = 30;
     private final static int LONGITUD_ID = 10;
-    private final static int LONGITUD_STATE = 10;
-    private final static int LONGITUD_RECEPTION_DATE = 20;
-    private final static int LONGITUD_EQUIPO_ID = 10;
-    private final static int LONGITUD_CLIENTE_ID = 10;
 
-    private final static String NOMBRE_ARCHIVO = "solicitudes";
+    private final static String NOMBRE_ARCHIVO = "tareas_solicitud";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    public SolicitudeDaoNio() {
+    public SolicitudTaskDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -43,8 +37,8 @@ public class SolicitudeDaoNio implements SolicitudDao {
     }
 
     @Override
-    public Solicitud create(Solicitud solicitud) {
-        String registroDireccion = parseSolicitud(solicitud);
+    public SolicitudTask create(SolicitudTask task) {
+        String registroDireccion = parseTask(task);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
         try (FileChannel fileChannel = FileChannel.open(ARCHIVO, APPEND)) {
@@ -52,19 +46,19 @@ public class SolicitudeDaoNio implements SolicitudDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return solicitud;
+        return task;
     }
 
     @Override
-    public Optional<Solicitud> read(int id) {
+    public Optional<SolicitudTask> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud cliente = parseRegistro(registro);
-                if (cliente.getId() == id) {
-                    return Optional.of(cliente);
+                SolicitudTask task = parseRegistro(registro);
+                if (task.getId() == id) {
+                    return Optional.of(task);
                 }
                 buffer.flip();
             }
@@ -75,15 +69,15 @@ public class SolicitudeDaoNio implements SolicitudDao {
     }
 
     @Override
-    public void update(Solicitud cliente) {
+    public void update(SolicitudTask cliente) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud dbClient = parseRegistro(registro);
+                SolicitudTask dbClient = parseRegistro(registro);
                 if (dbClient.getId() == cliente.getId()) {
-                    String clienteToUpdate = parseSolicitud(cliente);
+                    String clienteToUpdate = parseTask(cliente);
                     byte[] by = clienteToUpdate.getBytes();
                     buffer.put(by);
                 }
@@ -100,60 +94,47 @@ public class SolicitudeDaoNio implements SolicitudDao {
     }
 
     @Override
-    public List<Solicitud> findAll() {
-        List<Solicitud> clientes = new ArrayList<>();
+    public List<SolicitudTask> findAll() {
+        List<SolicitudTask> tasks = new ArrayList<>();
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud cliente = parseRegistro(registro);
-                clientes.add(cliente);
+                SolicitudTask task = parseRegistro(registro);
+                tasks.add(task);
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return clientes;
+        return tasks;
     }
 
+    private SolicitudTask parseRegistro(CharBuffer registro) {
+        SolicitudTask task = new SolicitudTask();
 
-    private Solicitud parseRegistro(CharBuffer registro) {
-        Solicitud solicitud = new Solicitud();
-
-        String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();
-        solicitud.setId(Integer.parseInt(identificacion));
+        String id = registro.subSequence(0, LONGITUD_ID).toString().trim();
+        task.setId(Integer.parseInt(id));
         registro.position(LONGITUD_ID);
         registro = registro.slice();
 
-        String state = registro.subSequence(0, LONGITUD_STATE).toString().trim();
-        solicitud.setState(Boolean.valueOf(state));
-        registro.position(LONGITUD_STATE);
-        registro = registro.slice();
-
-        String reception = registro.subSequence(0, LONGITUD_RECEPTION_DATE).toString().trim();
-        solicitud.setReceptionDate(reception);
-        registro.position(LONGITUD_RECEPTION_DATE);
-        registro = registro.slice();
-
-        String idEquipo = registro.subSequence(0, LONGITUD_ID).toString().trim();
-        solicitud.setIdEquipo(Integer.parseInt(idEquipo));
+        id = registro.subSequence(0, LONGITUD_ID).toString().trim();
+        task.setSolicitudId(Integer.parseInt(id));
         registro.position(LONGITUD_ID);
         registro = registro.slice();
 
-        String idCliente = registro.subSequence(0, LONGITUD_ID).toString().trim();
-        solicitud.setIdClienteOwner(Integer.parseInt(idCliente));
+        id = registro.subSequence(0, LONGITUD_ID).toString().trim();
+        task.setTaskId(Integer.parseInt(id));
 
-        return solicitud;
+        return task;
     }
 
-    private String parseSolicitud(Solicitud solicitud) {
+    private String parseTask(SolicitudTask taskEquipoUser) {
         StringBuilder sb = new StringBuilder();
-        sb.append(ajustarCampo(String.valueOf(solicitud.getId()), LONGITUD_ID))
-                .append(ajustarCampo(String.valueOf(solicitud.getState()), LONGITUD_STATE))
-                .append(ajustarCampo(solicitud.getReceptionDate(), LONGITUD_RECEPTION_DATE))
-                .append(ajustarCampo(String.valueOf(solicitud.getIdEquipo()), LONGITUD_EQUIPO_ID))
-                .append(ajustarCampo(String.valueOf(solicitud.getIdClienteOwner()), LONGITUD_CLIENTE_ID));
+        sb.append(ajustarCampo(String.valueOf(taskEquipoUser.getId()), LONGITUD_ID))
+                .append(ajustarCampo(String.valueOf(taskEquipoUser.getSolicitudId()), LONGITUD_ID))
+                .append(ajustarCampo(String.valueOf(taskEquipoUser.getTaskId()), LONGITUD_ID));
         return sb.toString();
     }
 
@@ -164,4 +145,3 @@ public class SolicitudeDaoNio implements SolicitudDao {
         return String.format("%1$-" + longitud + "s", campo);
     }
 }
-

@@ -95,4 +95,22 @@ public class ContenedorPrincipalController {
             e.printStackTrace();
         }
     }
+
+    public void mnuAddSolicitud(){
+        try {
+            AnchorPane addSolicitud = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/solicitud/add-solicitud.fxml")));
+            contenedorPrincipal.setCenter(addSolicitud);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuAddSolicitudTask(){
+        try {
+            AnchorPane addSolicitudTask = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/solicitud/add-task-solicitud.fxml")));
+            contenedorPrincipal.setCenter(addSolicitudTask);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

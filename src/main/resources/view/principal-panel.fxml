@@ -40,8 +40,8 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Solicitudes">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Crear solicitud" />
-                        <MenuItem mnemonicParsing="false" text="Consultar estado de solicitud" />
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddSolicitud" text="Crear solicitud" />
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddSolicitudTask" text="Agregar tarea a solicitud" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Opciones">

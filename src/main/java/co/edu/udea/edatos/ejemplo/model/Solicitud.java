@@ -61,4 +61,11 @@ public class Solicitud {
         this.idClienteOwner = idClienteOwner;
     }
 
+    @Override
+    public String toString() {
+        return String.format("id: %s - reception date: %s - equipo id: %s", this.id, receptionDate, idEquipo);
+    }
+
+
+
 }
