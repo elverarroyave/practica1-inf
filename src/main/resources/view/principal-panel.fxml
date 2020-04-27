@@ -44,6 +44,11 @@
                         <MenuItem mnemonicParsing="false" onAction="#mnuAddSolicitudTask" text="Agregar tarea a solicitud" />
                     </items>
                 </Menu>
+                <Menu mnemonicParsing="false" text="Facturas">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#mnuGenerateFacutura" text="Generar factura" />
+                    </items>
+                </Menu>
                 <Menu mnemonicParsing="false" text="Opciones">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#mnuSalir" text="Salir" />

@@ -113,4 +113,13 @@ public class ContenedorPrincipalController {
             e.printStackTrace();
         }
     }
+
+    public void mnuGenerateFacutura(){
+        try {
+            AnchorPane generateFactura = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/factura/generate-factura.fxml")));
+            contenedorPrincipal.setCenter(generateFactura);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
