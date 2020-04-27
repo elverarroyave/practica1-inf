@@ -1,15 +1,16 @@
 package co.edu.udea.edatos.ejemplo.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.model.Solicitud;
 
 public interface SolicitudDao {
 
-    public void guardar(Solicitud Solicitud);
-    public List<Solicitud> getSolicitudesByIncompleteState();
-    public List<Solicitud> getSolicitudesByCompleteState();
-    public List<Solicitud> getSolicitudesByUserId(int userId);
-    public List<Solicitud> getSolicitudesByEquipoId(int equipoId);
+    Solicitud create(Solicitud factura);
+    Optional<Solicitud> read(int id);
+    void update(Solicitud factura);
+    void destroy(int id);
+    List<Solicitud> findAll();
 
 }

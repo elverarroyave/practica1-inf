@@ -78,4 +78,48 @@ public class ContenedorPrincipalController {
         }
     }
 
+    public void mnuAddTask(){
+        try {
+            AnchorPane addTask = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/task/add-task.fxml")));
+            contenedorPrincipal.setCenter(addTask);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuListTask(){
+        try {
+            AnchorPane addComponentEquipo = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/task/task-list.fxml")));
+            contenedorPrincipal.setCenter(addComponentEquipo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuAddSolicitud(){
+        try {
+            AnchorPane addSolicitud = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/solicitud/add-solicitud.fxml")));
+            contenedorPrincipal.setCenter(addSolicitud);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuAddSolicitudTask(){
+        try {
+            AnchorPane addSolicitudTask = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/solicitud/add-task-solicitud.fxml")));
+            contenedorPrincipal.setCenter(addSolicitudTask);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuGenerateFacutura(){
+        try {
+            AnchorPane generateFactura = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/factura/generate-factura.fxml")));
+            contenedorPrincipal.setCenter(generateFactura);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

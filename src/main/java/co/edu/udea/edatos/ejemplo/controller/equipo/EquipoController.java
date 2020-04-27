@@ -3,21 +3,14 @@ package co.edu.udea.edatos.ejemplo.controller.equipo;
 import co.edu.udea.edatos.ejemplo.bsn.ClienteBsn;
 import co.edu.udea.edatos.ejemplo.bsn.EquipoBsn;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
-import co.edu.udea.edatos.ejemplo.model.Component;
 import co.edu.udea.edatos.ejemplo.model.Equipo;
-import javafx.beans.Observable;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.util.List;
-import java.util.Objects;
 
 public class EquipoController {
 
@@ -32,18 +25,18 @@ public class EquipoController {
     @FXML
     private ComboBox<Cliente> cmbClientes;
 
-    EquipoBsn equipoBs = new EquipoBsn();
+    private EquipoBsn equipoBs = new EquipoBsn();
     ClienteBsn clienteBsn = new ClienteBsn();
 
     @FXML
     public void initialize() {
-        List<Cliente> clientes = clienteBsn.listarClientes();
+        List<Cliente> clientes = clienteBsn.getAll();
         ObservableList<Cliente> equiposObservables = FXCollections.observableArrayList(clientes);
         this.cmbClientes.setItems(equiposObservables);
     }
 
-    public void cmbUpdate() {
-        List<Cliente> clientes = clienteBsn.listarClientes();
+    public void list() {
+        List<Cliente> clientes = clienteBsn.getAll();
         ObservableList<Cliente> equiposObservables = FXCollections.observableArrayList(clientes);
         this.cmbClientes.setItems(equiposObservables);
     }
@@ -56,14 +49,16 @@ public class EquipoController {
         String model = txtModel.getText();
         int pcOwnerId = cmbClientes.getValue().getId();
 
-            Equipo equipo = new Equipo();
-            equipo.setId(id);
-            equipo.setBrand(brand);
-            equipo.setModel(model);
-            equipo.setPcOwner(pcOwnerId);
-
-            equipoBs.registrarEquipo(equipo);
+        Equipo equipo = new Equipo();
+        equipo.setId(id);
+        equipo.setBrand(brand);
+        equipo.setModel(model);
+        equipo.setPcOwner(pcOwnerId);
+        try {
+            equipoBs.save(equipo);
             System.out.println("[INFO] Component serial: "+ id +" Component name: " + brand);
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

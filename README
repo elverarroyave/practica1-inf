@@ -1,0 +1,3 @@
+Run maven assembly to build a jar file with:
+- mvn clean compile assembly:single
+

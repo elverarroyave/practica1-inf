@@ -6,64 +6,75 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane fx:id="contenedorPrincipal" prefHeight="401.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.ContenedorPrincipalController">
-     <top>
+    <top>
         <MenuBar BorderPane.alignment="CENTER">
-          <menus>
-            <Menu mnemonicParsing="false" text="Gestor de usuario">
-              <items>
-                    <Menu mnemonicParsing="false" text="Empleados">
-                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#mnuAddEmployee" text="Registrar empleado" />
-                        <MenuItem fx:id="mnuListEmployee" mnemonicParsing="false" onAction="#mnuListEmployee" text="Listar empleados" />
-                      </items>
-                    </Menu>
-                    <Menu mnemonicParsing="false" text="Clientes">
-                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#mnuAddClient" text="Registrar Cliente" />
-                        <MenuItem mnemonicParsing="false" onAction="#mnuListClient" text="Listar Clientes" />
-                      </items>
-                    </Menu>
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Gestor de equipos">
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#mnuAddEquipo" text="Registrar equipo" />
-                  <MenuItem mnemonicParsing="false" onAction="#mnuAddComponent" text="Registrar Componente" />
-                  <MenuItem mnemonicParsing="false" onAction="#mnuAddEquipoComponent" text="Agregar Componentes a Equipo" />
-                </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Solicitudes">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Crear solicitud" />
-                    <MenuItem mnemonicParsing="false" text="Consultar estado de solicitud" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Opciones">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#mnuSalir" text="Salir" />
-              </items>
-            </Menu>
-          </menus>
+            <menus>
+                <Menu mnemonicParsing="false" text="Gestor de usuario">
+                    <items>
+                        <Menu mnemonicParsing="false" text="Empleados">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#mnuAddEmployee" text="Registrar empleado" />
+                                <MenuItem fx:id="mnuListEmployee" mnemonicParsing="false" onAction="#mnuListEmployee" text="Listar empleados" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Clientes">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#mnuAddClient" text="Registrar Cliente" />
+                                <MenuItem mnemonicParsing="false" onAction="#mnuListClient" text="Listar Clientes" />
+                            </items>
+                        </Menu>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Gestor de equipos">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddEquipo" text="Registrar equipo" />
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddComponent" text="Registrar Componente" />
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddEquipoComponent" text="Agregar Componentes a Equipo" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Gestor de Tasks">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddTask" text="Crear Task" />
+                        <MenuItem mnemonicParsing="false" onAction="#mnuListTask" text="Listar Tasks" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Solicitudes">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddSolicitud" text="Crear solicitud" />
+                        <MenuItem mnemonicParsing="false" onAction="#mnuAddSolicitudTask" text="Agregar tarea a solicitud" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Facturas">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#mnuGenerateFacutura" text="Generar factura" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Opciones">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#mnuSalir" text="Salir" />
+                    </items>
+                </Menu>
+            </menus>
         </MenuBar>
-     </top>
-   <center>
-      <Label text="Practica 1 Estructuras Físicas de la información - UdeA" BorderPane.alignment="CENTER">
-         <font>
-            <Font name="System Bold Italic" size="19.0" />
-         </font>
-      </Label>
-   </center>
-   <bottom>
-      <Label prefHeight="37.0" prefWidth="402.0" text="Desarrollado por: Elver Andres Arroyave - Cristian Serna Betancur " BorderPane.alignment="CENTER_RIGHT">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-         <padding>
-            <Insets bottom="20.0" right="20.0" />
-         </padding>
-         <font>
-            <Font name="System Bold Italic" size="12.0" />
-         </font>
-      </Label>
-   </bottom>
-  </BorderPane>
+    </top>
+    <center>
+        <Label text="Practica 1 Estructuras Físicas de la información - UdeA" BorderPane.alignment="CENTER">
+            <font>
+                <Font name="System Bold Italic" size="19.0" />
+            </font>
+        </Label>
+    </center>
+    <bottom>
+        <Label prefHeight="37.0" prefWidth="402.0" text="Desarrollado por: Elver Andres Arroyave - Cristian Serna Betancur " BorderPane.alignment="CENTER_RIGHT">
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <padding>
+                <Insets bottom="20.0" right="20.0" />
+            </padding>
+            <font>
+                <Font name="System Bold Italic" size="12.0" />
+            </font>
+        </Label>
+    </bottom>
+</BorderPane>

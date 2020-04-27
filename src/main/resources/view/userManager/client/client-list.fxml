@@ -17,16 +17,14 @@
       </Pane>
       <Pane layoutX="28.0" layoutY="67.0" prefHeight="391.0" prefWidth="418.0">
          <children>
-            <TableView layoutY="-11.0" prefHeight="328.0" prefWidth="418.0">
+            <TableView fx:id="tblCliente" layoutY="-11.0" prefHeight="328.0" prefWidth="418.0">
               <columns>
-                <TableColumn prefWidth="98.0" text="Identificacion" />
-                <TableColumn prefWidth="128.0" text="Nombre" />
-                <TableColumn prefWidth="191.0" text="Apellido" />
+                <TableColumn fx:id="clmId" prefWidth="98.0" text="Identificacion" />
+                <TableColumn fx:id="clmName" prefWidth="128.0" text="Nombre" />
+                <TableColumn fx:id="clmNumberPhone" prefWidth="191.0" text="Apellido" />
               </columns>
             </TableView>
-            <Button layoutX="-3.0" layoutY="334.0" mnemonicParsing="false" onAction="#btnEditUser" text="Editar" />
-            <Button layoutX="55.0" layoutY="334.0" mnemonicParsing="false" text="Borrar" />
-            <Button layoutX="382.0" layoutY="334.0" mnemonicParsing="false" text="Salir" />
+            <Button layoutX="382.0" layoutY="334.0" mnemonicParsing="false" onAction="#listar" text="Listar" />
          </children>
       </Pane>
    </children>

@@ -9,8 +9,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.FacturaDao;
+import co.edu.udea.edatos.ejemplo.model.Cliente;
 import co.edu.udea.edatos.ejemplo.model.Factura;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -37,7 +41,7 @@ public class FacturaDaoNio implements FacturaDao {
     }
 
     @Override
-    public void guardar(Factura factura) {
+    public Factura create(Factura factura) {
         String registroDireccion = parseFactura(factura);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
@@ -46,25 +50,69 @@ public class FacturaDaoNio implements FacturaDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        return factura;
     }
 
     @Override
-    public Factura getFacturaBySolicitudeId(int id) {
+    public Optional<Factura> read(int id) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Factura factura = parseRegistro(registro);
-                if (factura.getSolicitudeId() == id) {
-                    return factura;
+                Factura cliente = parseRegistro(registro);
+                if (cliente.getId() == id) {
+                    return Optional.of(cliente);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return null;
+        return Optional.empty();
+    }
+
+    @Override
+    public void update(Factura cliente) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Factura dbClient = parseRegistro(registro);
+                if (dbClient.getId() == cliente.getId()) {
+                    String clienteToUpdate = parseFactura(cliente);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    @Override
+    public void destroy(int id) {
+
+    }
+
+    @Override
+    public List<Factura> findAll() {
+        List<Factura> clientes = new ArrayList<>();
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Factura cliente = parseRegistro(registro);
+                clientes.add(cliente);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return clientes;
     }
 
     private Factura parseRegistro(CharBuffer registro) {

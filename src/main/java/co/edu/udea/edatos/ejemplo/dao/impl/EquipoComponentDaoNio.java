@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.EquipoComponentDao;
 import co.edu.udea.edatos.ejemplo.model.EquipoComponent;
@@ -19,7 +20,7 @@ import static java.nio.file.StandardOpenOption.APPEND;
 
 public class EquipoComponentDaoNio implements EquipoComponentDao {
 
-    private final static int LONGITUD_REGISTRO = 20;
+    private final static int LONGITUD_REGISTRO = 30;
     private final static int LONGITUD_ID = 10;
 
     private final static String NOMBRE_ARCHIVO = "equipo_component";
@@ -36,7 +37,7 @@ public class EquipoComponentDaoNio implements EquipoComponentDao {
     }
 
     @Override
-    public void guardar(EquipoComponent equipoComponent) {
+    public EquipoComponent create(EquipoComponent equipoComponent) {
         String registroDireccion = parseEquipoComponent(equipoComponent);
         byte[] datosRegistro = registroDireccion.getBytes();
         ByteBuffer byteBuffer = ByteBuffer.wrap(datosRegistro);
@@ -45,30 +46,78 @@ public class EquipoComponentDaoNio implements EquipoComponentDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        return equipoComponent;
     }
 
     @Override
-    public List<EquipoComponent> getComponentByEquipoId(int id) {
-        List<EquipoComponent> equipoComponents = new ArrayList<>();
+    public void update(EquipoComponent equipoComponent) {
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                EquipoComponent equipoComponent = parseRegistro(registro);
-                if (equipoComponent.getEquipoId() == id) {
-                    equipoComponents.add(equipoComponent);
+                EquipoComponent dbClient = parseRegistro(registro);
+                if (dbClient.getId() == equipoComponent.getId()) {
+                    String clienteToUpdate = parseEquipoComponent(equipoComponent);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.put(by);
                 }
                 buffer.flip();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return equipoComponents;
+    }
+
+    @Override
+    public Optional<EquipoComponent> read(int id) {
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                EquipoComponent cliente = parseRegistro(registro);
+                if (cliente.getId() == id) {
+                    return Optional.of(cliente);
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<EquipoComponent> findAll() {
+        List<EquipoComponent> clientes = new ArrayList<>();
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                EquipoComponent cliente = parseRegistro(registro);
+                clientes.add(cliente);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return clientes;
+    }
+
+    @Override
+    public void destroy(int id) {
+
     }
 
     private EquipoComponent parseRegistro(CharBuffer registro) {
         EquipoComponent equipoComponent = new EquipoComponent();
+
+        String id = registro.subSequence(0, LONGITUD_ID).toString().trim();
+        equipoComponent.setId(Integer.parseInt(id));
+        registro.position(LONGITUD_ID);
+        registro = registro.slice();
 
         String equipoId = registro.subSequence(0, LONGITUD_ID).toString().trim();
         equipoComponent.setEquipoId(Integer.parseInt(equipoId));
@@ -81,10 +130,10 @@ public class EquipoComponentDaoNio implements EquipoComponentDao {
         return equipoComponent;
     }
 
-
     private String parseEquipoComponent(EquipoComponent equipoComponent) {
         StringBuilder sb = new StringBuilder();
-        sb.append(ajustarCampo(String.valueOf(equipoComponent.getEquipoId()), LONGITUD_ID))
+        sb.append(ajustarCampo(String.valueOf(equipoComponent.getId()), LONGITUD_ID))
+                .append(ajustarCampo(String.valueOf(equipoComponent.getEquipoId()), LONGITUD_ID))
                 .append(ajustarCampo(String.valueOf(equipoComponent.getComponentId()), LONGITUD_ID));
         return sb.toString();
     }
