@@ -36,7 +36,7 @@ public class EmpleadoController {
     @FXML
     private TextField txtNumberPhone;
 
-    EmpleadoBsn empleadoBsn = new EmpleadoBsn();
+    static EmpleadoBsn empleadoBsn = new EmpleadoBsn();
 
     public void create(){
         String name = txtName.getText();

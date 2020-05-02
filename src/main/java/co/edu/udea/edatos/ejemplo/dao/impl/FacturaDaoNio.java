@@ -32,10 +32,13 @@ public class FacturaDaoNio implements FacturaDao {
     private final static String NOMBRE_ARCHIVO = "facturas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private final RedBlackTree indice = new RedBlackTree();
+    private static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public FacturaDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -43,10 +46,6 @@ public class FacturaDaoNio implements FacturaDao {
                 ioe.printStackTrace();
             }
         }
-        crearIndice();
-    }
-
-    private void crearIndice() {
         System.out.println("Creando índice");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
@@ -78,6 +77,11 @@ public class FacturaDaoNio implements FacturaDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Factura toInsert = new Factura();
+        toInsert.setId(factura.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return factura;
     }
 
@@ -154,7 +158,7 @@ public class FacturaDaoNio implements FacturaDao {
         return clientes;
     }
 
-    private Factura parseRegistro(CharBuffer registro) {
+    private static Factura parseRegistro(CharBuffer registro) {
         Factura factura = new Factura();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

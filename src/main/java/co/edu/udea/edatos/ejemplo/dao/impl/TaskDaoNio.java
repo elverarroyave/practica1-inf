@@ -32,10 +32,13 @@ public class TaskDaoNio implements TaskDao {
     private final static String NOMBRE_ARCHIVO = "tareas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private final RedBlackTree indice = new RedBlackTree();
+    private static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public TaskDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -43,10 +46,6 @@ public class TaskDaoNio implements TaskDao {
                 ioe.printStackTrace();
             }
         }
-        crearIndice();
-    }
-
-    private void crearIndice() {
         System.out.println("Creando índice");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
@@ -78,6 +77,11 @@ public class TaskDaoNio implements TaskDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Task toInsert = new Task();
+        toInsert.setId(task.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return task;
     }
 
@@ -155,7 +159,7 @@ public class TaskDaoNio implements TaskDao {
     }
 
 
-    private Task parseRegistro(CharBuffer registro) {
+    private static Task parseRegistro(CharBuffer registro) {
         Task task = new Task();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

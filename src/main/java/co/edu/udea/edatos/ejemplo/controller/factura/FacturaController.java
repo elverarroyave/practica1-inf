@@ -39,8 +39,8 @@ public class FacturaController {
     @FXML
     private TableColumn<Task, String> clmPayment;
 
-    private SolicitudBsn solicitudBsn = new SolicitudBsn();
-    private FacturaBsn facturaBsn = new FacturaBsn();
+    private static SolicitudBsn solicitudBsn = new SolicitudBsn();
+    private static FacturaBsn facturaBsn = new FacturaBsn();
 
     @FXML
     public void initialize() {

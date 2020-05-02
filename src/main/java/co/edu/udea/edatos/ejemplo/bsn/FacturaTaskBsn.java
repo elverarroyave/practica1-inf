@@ -14,8 +14,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class FacturaTaskBsn {
 
     private static FacturaTaskDao repository = new FacturaTaskDaoNio();
-    private FacturaBsn facturaBsn = new FacturaBsn();
-    private TaskBsn taskBsn = new TaskBsn();
+    private static FacturaBsn facturaBsn = new FacturaBsn();
+    private static TaskBsn taskBsn = new TaskBsn();
 
     public void save(FacturaTask facturaTask) throws Exception {
         Optional<FacturaTask> search = repository.read(facturaTask.getId());

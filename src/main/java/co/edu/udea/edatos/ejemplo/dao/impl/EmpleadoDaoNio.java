@@ -2,6 +2,7 @@ package co.edu.udea.edatos.ejemplo.dao.impl;
 
 import co.edu.udea.edatos.ejemplo.dao.EmpleadoDao;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
+import co.edu.udea.edatos.ejemplo.model.Component;
 import co.edu.udea.edatos.ejemplo.model.Empleado;
 import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
@@ -35,10 +36,13 @@ public class EmpleadoDaoNio implements EmpleadoDao {
     private final static String NOMBRE_ARCHIVO = "empleados";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private final RedBlackTree indice = new RedBlackTree();
+    private static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public EmpleadoDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -46,10 +50,6 @@ public class EmpleadoDaoNio implements EmpleadoDao {
                 ioe.printStackTrace();
             }
         }
-        crearIndice();
-    }
-
-    private void crearIndice() {
         System.out.println("Creando índice");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
@@ -81,6 +81,11 @@ public class EmpleadoDaoNio implements EmpleadoDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Empleado toInsert = new Empleado();
+        toInsert.setId(empleado.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return empleado;
     }
 
@@ -157,7 +162,7 @@ public class EmpleadoDaoNio implements EmpleadoDao {
     public void destroy(int id) {
 
     }
-    private Empleado parseRegistro(CharBuffer registro) {
+    private static Empleado parseRegistro(CharBuffer registro) {
         Empleado empleado = new Empleado();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

@@ -29,10 +29,13 @@ public class SolicitudTaskDaoNio implements SolicitudTaskDao {
     private final static String NOMBRE_ARCHIVO = "tareas_solicitud";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private final RedBlackTree indice = new RedBlackTree();
+    private static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public SolicitudTaskDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -40,10 +43,6 @@ public class SolicitudTaskDaoNio implements SolicitudTaskDao {
                 ioe.printStackTrace();
             }
         }
-        crearIndice();
-    }
-
-    private void crearIndice() {
         System.out.println("Creando índice");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
@@ -75,6 +74,11 @@ public class SolicitudTaskDaoNio implements SolicitudTaskDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        SolicitudTask toInsert = new SolicitudTask();
+        toInsert.setId(task.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return task;
     }
 
@@ -151,7 +155,7 @@ public class SolicitudTaskDaoNio implements SolicitudTaskDao {
         return tasks;
     }
 
-    private SolicitudTask parseRegistro(CharBuffer registro) {
+    private static SolicitudTask parseRegistro(CharBuffer registro) {
         SolicitudTask task = new SolicitudTask();
 
         String id = registro.subSequence(0, LONGITUD_ID).toString().trim();

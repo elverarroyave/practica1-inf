@@ -26,8 +26,8 @@ public class SolicitudController {
     @FXML
     private ComboBox<Equipo> cmbEquipo;
 
-    EquipoBsn equipoBsn = new EquipoBsn();
-    SolicitudBsn solicitudBsn = new SolicitudBsn();
+    static EquipoBsn equipoBsn = new EquipoBsn();
+    static SolicitudBsn solicitudBsn = new SolicitudBsn();
 
     @FXML
     private void initialize() {

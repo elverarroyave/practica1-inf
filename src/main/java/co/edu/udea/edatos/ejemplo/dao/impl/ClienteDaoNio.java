@@ -34,10 +34,13 @@ public class ClienteDaoNio implements ClienteDao {
     private final static String NOMBRE_ARCHIVO = "clientes";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private final RedBlackTree indice = new RedBlackTree();
+    private static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public ClienteDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -45,10 +48,6 @@ public class ClienteDaoNio implements ClienteDao {
                 ioe.printStackTrace();
             }
         }
-        crearIndice();
-    }
-
-    private void crearIndice() {
         System.out.println("Creando índice");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
@@ -80,6 +79,12 @@ public class ClienteDaoNio implements ClienteDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Cliente toInsert = new Cliente();
+        toInsert.setId(cliente.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
+
         return cliente;
     }
 
@@ -155,7 +160,7 @@ public class ClienteDaoNio implements ClienteDao {
         }
     }
 
-    private Cliente parseRegistro(CharBuffer registro) {
+    private static Cliente parseRegistro(CharBuffer registro) {
         Cliente cliente = new Cliente();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

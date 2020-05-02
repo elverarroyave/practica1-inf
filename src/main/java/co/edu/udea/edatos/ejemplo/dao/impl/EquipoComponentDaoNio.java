@@ -30,10 +30,13 @@ public class EquipoComponentDaoNio implements EquipoComponentDao {
     private final static String NOMBRE_ARCHIVO = "equipo_component";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private final RedBlackTree indice = new RedBlackTree();
+    private static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public EquipoComponentDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
@@ -41,10 +44,6 @@ public class EquipoComponentDaoNio implements EquipoComponentDao {
                 ioe.printStackTrace();
             }
         }
-        crearIndice();
-    }
-
-    private void crearIndice() {
         System.out.println("Creando índice");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
@@ -76,6 +75,11 @@ public class EquipoComponentDaoNio implements EquipoComponentDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        EquipoComponent toInsert = new EquipoComponent();
+        toInsert.setId(equipoComponent.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return equipoComponent;
     }
 
@@ -152,7 +156,7 @@ public class EquipoComponentDaoNio implements EquipoComponentDao {
 
     }
 
-    private EquipoComponent parseRegistro(CharBuffer registro) {
+    private static EquipoComponent parseRegistro(CharBuffer registro) {
         EquipoComponent equipoComponent = new EquipoComponent();
 
         String id = registro.subSequence(0, LONGITUD_ID).toString().trim();
