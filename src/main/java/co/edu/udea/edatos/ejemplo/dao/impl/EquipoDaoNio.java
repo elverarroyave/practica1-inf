@@ -12,11 +12,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.EquipoDao;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
 import co.edu.udea.edatos.ejemplo.model.Equipo;
+import co.edu.udea.edatos.ejemplo.model.EquipoComponent;
 import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -52,9 +54,14 @@ public class EquipoDaoNio implements EquipoDao {
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
                 Equipo equipo = parseRegistro(registro);
+                Equipo toSave = new Equipo();
+                toSave.setId(equipo.getId());
+                toSave.setDirection(direccion++);
+
                 System.out.println(String.format("%s -> %s", equipo.getId(), direccion));
-                indice.insert(equipo);
+                indice.insert(toSave);
                 buffer.flip();
             }
         } catch (IOException ioe) {
@@ -114,21 +121,32 @@ public class EquipoDaoNio implements EquipoDao {
 
     @Override
     public Optional<Equipo> read(int id) {
+        Equipo search = new Equipo();
+        search.setId(id);
+        Equipo find = (Equipo) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Equipo equipo = parseRegistro(registro);
-                if (equipo.getId() == id) {
-                    return Optional.of(equipo);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Equipo usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override

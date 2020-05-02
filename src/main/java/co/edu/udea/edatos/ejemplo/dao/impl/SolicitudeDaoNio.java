@@ -12,10 +12,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.SolicitudDao;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
+import co.edu.udea.edatos.ejemplo.model.FacturaTask;
 import co.edu.udea.edatos.ejemplo.model.Solicitud;
 import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
@@ -54,9 +56,14 @@ public class SolicitudeDaoNio implements SolicitudDao {
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
                 Solicitud solicitud = parseRegistro(registro);
+                Solicitud toSave = new Solicitud();
+                toSave.setId(solicitud.getId());
+                toSave.setDirection(direccion++);
+
                 System.out.println(String.format("%s -> %s", solicitud.getId(), direccion));
-                indice.insert(solicitud);
+                indice.insert(toSave);
                 buffer.flip();
             }
         } catch (IOException ioe) {
@@ -79,21 +86,32 @@ public class SolicitudeDaoNio implements SolicitudDao {
 
     @Override
     public Optional<Solicitud> read(int id) {
+        Solicitud search = new Solicitud();
+        search.setId(id);
+        Solicitud find = (Solicitud) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud cliente = parseRegistro(registro);
-                if (cliente.getId() == id) {
-                    return Optional.of(cliente);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Solicitud usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override

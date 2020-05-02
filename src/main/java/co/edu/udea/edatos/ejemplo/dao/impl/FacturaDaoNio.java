@@ -11,10 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.FacturaDao;
-import co.edu.udea.edatos.ejemplo.model.Cliente;
+import co.edu.udea.edatos.ejemplo.model.Equipo;
 import co.edu.udea.edatos.ejemplo.model.Factura;
 import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
@@ -52,9 +53,14 @@ public class FacturaDaoNio implements FacturaDao {
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
                 Factura factura = parseRegistro(registro);
+                Factura toSave = new Factura();
+                toSave.setId(factura.getId());
+                toSave.setDirection(direccion++);
+
                 System.out.println(String.format("%s -> %s", factura.getId(), direccion));
-                indice.insert(factura);
+                indice.insert(toSave);
                 buffer.flip();
             }
         } catch (IOException ioe) {
@@ -77,21 +83,32 @@ public class FacturaDaoNio implements FacturaDao {
 
     @Override
     public Optional<Factura> read(int id) {
+        Factura search = new Factura();
+        search.setId(id);
+        Factura find = (Factura) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Factura cliente = parseRegistro(registro);
-                if (cliente.getId() == id) {
-                    return Optional.of(cliente);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Factura usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override

@@ -11,9 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.TaskDao;
+import co.edu.udea.edatos.ejemplo.model.SolicitudTask;
 import co.edu.udea.edatos.ejemplo.model.Task;
 import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
@@ -51,9 +53,14 @@ public class TaskDaoNio implements TaskDao {
             while (sbc.read(buffer) > 0) {
                 buffer.rewind();
                 CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
                 Task task = parseRegistro(registro);
+                Task toSave = new Task();
+                toSave.setId(task.getId());
+                toSave.setDirection(direccion++);
+
                 System.out.println(String.format("%s -> %s", task.getId(), direccion));
-                indice.insert(task);
+                indice.insert(toSave);
                 buffer.flip();
             }
         } catch (IOException ioe) {
@@ -94,21 +101,32 @@ public class TaskDaoNio implements TaskDao {
 
     @Override
     public Optional<Task> read(int id) {
+        Task search = new Task();
+        search.setId(id);
+        Task find = (Task) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Task task = parseRegistro(registro);
-                if (task.getId() == id) {
-                    return Optional.of(task);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Task usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
