@@ -49,6 +49,11 @@
                         <MenuItem mnemonicParsing="false" onAction="#mnuGenerateFacutura" text="Generar factura" />
                     </items>
                 </Menu>
+                <Menu mnemonicParsing="false" text="Reportes">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#mnuGenerateReport" text="Generar Reporte" />
+                    </items>
+                </Menu>
                 <Menu mnemonicParsing="false" text="Tree">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#tree" text="Ver Estados de los Arboles" />
