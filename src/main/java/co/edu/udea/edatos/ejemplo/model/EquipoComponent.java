@@ -1,7 +1,7 @@
 package co.edu.udea.edatos.ejemplo.model;
 
 
-public class EquipoComponent {
+public class EquipoComponent implements Comparable<EquipoComponent> {
 
     private int id;
     private int equipoId;
@@ -40,4 +40,8 @@ public class EquipoComponent {
         this.componentId = id;
     }
 
+    @Override
+    public int compareTo(EquipoComponent o) {
+        return id - o.getId();
+    }
 }

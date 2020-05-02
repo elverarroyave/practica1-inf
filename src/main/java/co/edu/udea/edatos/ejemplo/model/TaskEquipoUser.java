@@ -1,6 +1,10 @@
 package co.edu.udea.edatos.ejemplo.model;
 
+<<<<<<< Updated upstream
 public class TaskEquipoUser {
+=======
+public class TaskEquipoUser implements Comparable<TaskEquipoUser> {
+>>>>>>> Stashed changes
 
     private int id;
     private int equipoId;
@@ -58,4 +62,12 @@ public class TaskEquipoUser {
     public void setClienteId(int clienteId) {
         this.clienteId = clienteId;
     }
+<<<<<<< Updated upstream
+=======
+
+    @Override
+    public int compareTo(TaskEquipoUser o) {
+        return id - o.getId();
+    }
+>>>>>>> Stashed changes
 }

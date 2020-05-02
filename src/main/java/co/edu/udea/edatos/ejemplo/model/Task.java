@@ -1,6 +1,6 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
     private int id;
     private String name;
@@ -50,9 +50,22 @@ public class Task {
         this.payment = payment;
     }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
     @Override
     public String toString() {
         return String.format("Task: %s Payment: %s", name, payment);
     }
 
+<<<<<<< Updated upstream
+=======
+    @Override
+    public int compareTo(Task o) {
+        return id - o.getId();
+    }
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 }

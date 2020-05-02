@@ -1,6 +1,6 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-public class Equipo {
+public class Equipo implements Comparable<Equipo> {
 
     private int id;
     private String brand;
@@ -55,4 +55,8 @@ public class Equipo {
         return String.format("Id: %s Brand: %s Model: %s", id, brand, model);
     }
 
+    @Override
+    public int compareTo(Equipo o) {
+        return id - o.getId();
+    }
 }
