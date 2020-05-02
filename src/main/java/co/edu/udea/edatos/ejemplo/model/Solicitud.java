@@ -61,24 +61,13 @@ public class Solicitud implements Comparable<Solicitud> {
         this.idClienteOwner = idClienteOwner;
     }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
     @Override
     public String toString() {
         return String.format("id: %s - reception date: %s - equipo id: %s", this.id, receptionDate, idEquipo);
     }
 
-<<<<<<< Updated upstream
-
-
-=======
     @Override
     public int compareTo(Solicitud o) {
         return id - o.getId();
     }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 }
