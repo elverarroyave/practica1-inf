@@ -35,7 +35,7 @@ public class TaskController {
     @FXML
     private TextField txtPayment;
 
-    TaskBsn taskBsn = new TaskBsn();
+    static TaskBsn taskBsn = new TaskBsn();
 
     public void listar() {
         List<Task> tasks = taskBsn.getAll();

@@ -6,6 +6,8 @@ public class FacturaTask implements Comparable<FacturaTask> {
     private int facturaId;
     private int taskId;
 
+    private Integer direction;
+
     public FacturaTask() {
 
     }
@@ -38,6 +40,19 @@ public class FacturaTask implements Comparable<FacturaTask> {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("di: %s", id);
     }
 
     @Override

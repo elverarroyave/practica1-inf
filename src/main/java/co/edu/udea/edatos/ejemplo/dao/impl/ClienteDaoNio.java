@@ -2,6 +2,7 @@ package co.edu.udea.edatos.ejemplo.dao.impl;
 
 import co.edu.udea.edatos.ejemplo.dao.ClienteDao;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -29,16 +31,41 @@ public class ClienteDaoNio implements ClienteDao {
     private final static int LONGITUD_ADRESS = 30;
     private final static int LONGITUD_NUMBER = 15;
 
-    private final static String NOMBRE_ARCHIVO = "clientes";
+    public final static String NOMBRE_ARCHIVO = "clientes";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    public static final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public ClienteDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
+                Cliente cliente = parseRegistro(registro);
+                Cliente toSave = new Cliente();
+                toSave.setId(cliente.getId());
+                toSave.setDirection(direccion++);
+
+                System.out.println(String.format("%s -> %s", cliente.getId(), direccion));
+                indice.insert(toSave);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -52,6 +79,12 @@ public class ClienteDaoNio implements ClienteDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Cliente toInsert = new Cliente();
+        toInsert.setId(cliente.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
+
         return cliente;
     }
 
@@ -99,24 +132,35 @@ public class ClienteDaoNio implements ClienteDao {
 
     @Override
     public Optional<Cliente> read(int id) {
+        Cliente search = new Cliente();
+        search.setId(id);
+        Cliente find = (Cliente) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Cliente cliente = parseRegistro(registro);
-                if (cliente.getId() == id) {
-                    return Optional.of(cliente);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Cliente usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
-    private Cliente parseRegistro(CharBuffer registro) {
+    private static Cliente parseRegistro(CharBuffer registro) {
         Cliente cliente = new Cliente();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

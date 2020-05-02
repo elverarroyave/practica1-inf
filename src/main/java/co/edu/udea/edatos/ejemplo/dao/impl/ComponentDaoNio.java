@@ -12,10 +12,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.ComponentDao;
+import co.edu.udea.edatos.ejemplo.model.Cliente;
 import co.edu.udea.edatos.ejemplo.model.Component;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -26,16 +29,41 @@ public class ComponentDaoNio implements ComponentDao {
     private final static int LONGITUD_PRODUCER = 20;
     private final static int LONGITUD_DESCRIPTION = 40;
 
-    private final static String NOMBRE_ARCHIVO = "components";
+    public final static String NOMBRE_ARCHIVO = "components";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    public static final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public ComponentDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
+                Component component = parseRegistro(registro);
+                Component toSave = new Component();
+                toSave.setId(component.getId());
+                toSave.setDirection(direccion++);
+
+                System.out.println(String.format("%s -> %s", component.getId(), direccion));
+                indice.insert(toSave);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -69,6 +97,11 @@ public class ComponentDaoNio implements ComponentDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Component toInsert = new Component();
+        toInsert.setId(component.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return component;
     }
 
@@ -92,21 +125,32 @@ public class ComponentDaoNio implements ComponentDao {
 
     @Override
     public Optional<Component> read(int id) {
+        Component search = new Component();
+        search.setId(id);
+        Component find = (Component) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Component component = parseRegistro(registro);
-                if (component.getId() == id) {
-                    return Optional.of(component);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Component usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
@@ -114,7 +158,7 @@ public class ComponentDaoNio implements ComponentDao {
 
     }
 
-    private Component parseRegistro(CharBuffer registro) {
+    public static Component parseRegistro(CharBuffer registro) {
         Component component = new Component();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

@@ -5,6 +5,8 @@ public class SolicitudTask implements Comparable<SolicitudTask> {
     private int solicitudId;
     private int taskId;
 
+    private Integer direction;
+
     public SolicitudTask() {
 
     }
@@ -37,6 +39,19 @@ public class SolicitudTask implements Comparable<SolicitudTask> {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("id: %s", id);
     }
 
     @Override

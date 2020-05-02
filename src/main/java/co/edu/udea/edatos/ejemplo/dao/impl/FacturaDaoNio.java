@@ -11,11 +11,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.FacturaDao;
-import co.edu.udea.edatos.ejemplo.model.Cliente;
+import co.edu.udea.edatos.ejemplo.model.Equipo;
 import co.edu.udea.edatos.ejemplo.model.Factura;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -27,16 +29,41 @@ public class FacturaDaoNio implements FacturaDao {
     private final static int LONGITUD_DESCRIPTION = 20;
     private final static int LONGITUD_DATE = 40;
 
-    private final static String NOMBRE_ARCHIVO = "facturas";
+    public final static String NOMBRE_ARCHIVO = "facturas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    public static final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public FacturaDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
+                Factura factura = parseRegistro(registro);
+                Factura toSave = new Factura();
+                toSave.setId(factura.getId());
+                toSave.setDirection(direccion++);
+
+                System.out.println(String.format("%s -> %s", factura.getId(), direccion));
+                indice.insert(toSave);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -50,26 +77,42 @@ public class FacturaDaoNio implements FacturaDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Factura toInsert = new Factura();
+        toInsert.setId(factura.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return factura;
     }
 
     @Override
     public Optional<Factura> read(int id) {
+        Factura search = new Factura();
+        search.setId(id);
+        Factura find = (Factura) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Factura cliente = parseRegistro(registro);
-                if (cliente.getId() == id) {
-                    return Optional.of(cliente);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Factura usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
@@ -115,7 +158,7 @@ public class FacturaDaoNio implements FacturaDao {
         return clientes;
     }
 
-    private Factura parseRegistro(CharBuffer registro) {
+    private static Factura parseRegistro(CharBuffer registro) {
         Factura factura = new Factura();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

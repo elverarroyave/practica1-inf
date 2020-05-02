@@ -9,6 +9,8 @@ public class Cliente implements Comparable<Cliente> {
     private String adress;
     private String numberPhone;
 
+    private Integer direction;
+
     public Cliente() {
 
     }
@@ -77,6 +79,14 @@ public class Cliente implements Comparable<Cliente> {
 
     public void setNumberPhone(String numberPhone) {
         this.numberPhone = numberPhone;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override

@@ -8,6 +8,8 @@ public class Factura implements Comparable<Factura> {
     private String returnDate;
     private int solicitudeId;
 
+    private Integer direction;
+
     public Factura() {
 
     }
@@ -50,6 +52,19 @@ public class Factura implements Comparable<Factura> {
 
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("id: %s", id);
     }
 
     @Override

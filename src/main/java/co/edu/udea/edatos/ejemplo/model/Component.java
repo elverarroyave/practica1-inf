@@ -7,6 +7,8 @@ public class Component implements Comparable<Component> {
     private String producer;
     private String description;
 
+    private Integer direction;
+
     public Component() {
 
     }
@@ -38,6 +40,14 @@ public class Component implements Comparable<Component> {
     @Override
     public String toString() {
         return String.format("Id: %s Producer: %s Description: %s", id, producer, description);
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override

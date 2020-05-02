@@ -50,7 +50,7 @@ public class ClienteController {
     @FXML
     private TextField txtNumberPhone;
 
-    ClienteBsn clienteBsn = new ClienteBsn();
+    static ClienteBsn clienteBsn = new ClienteBsn();
 
     public void listar() {
         List<Cliente> clientes = clienteBsn.getAll();

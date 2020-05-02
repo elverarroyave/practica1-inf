@@ -1,7 +1,10 @@
 package co.edu.udea.edatos.ejemplo.dao.impl;
 
 import co.edu.udea.edatos.ejemplo.dao.EmpleadoDao;
+import co.edu.udea.edatos.ejemplo.model.Cliente;
+import co.edu.udea.edatos.ejemplo.model.Component;
 import co.edu.udea.edatos.ejemplo.model.Empleado;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -13,10 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.READ;
@@ -33,16 +33,41 @@ public class EmpleadoDaoNio implements EmpleadoDao {
     private final static int LONGITUD_ADRESS = 30;
     private final static int LONGITUD_NUMBER = 15;
 
-    private final static String NOMBRE_ARCHIVO = "empleados";
+    public final static String NOMBRE_ARCHIVO = "empleados";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    public static final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public EmpleadoDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
+                Empleado empleado = parseRegistro(registro);
+                Empleado toSave = new Empleado();
+                toSave.setId(empleado.getId());
+                toSave.setDirection(direccion++);
+
+                System.out.println(String.format("%s -> %s", empleado.getId(), direccion));
+                indice.insert(toSave);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -56,28 +81,33 @@ public class EmpleadoDaoNio implements EmpleadoDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Empleado toInsert = new Empleado();
+        toInsert.setId(empleado.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return empleado;
     }
 
     @Override
     public void update(Empleado empleado) {
-        //try (FileChannel sbc = FileChannel.open(ARCHIVO, APPEND, READ)) {
-        //    ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-        //    while (sbc.read(buffer) > 0) {
-        //        buffer.rewind();
-        //        CharBuffer registro = Charset.defaultCharset().decode(buffer);
-        //        Empleado dbClient = parseRegistro(registro);
-        //        if (dbClient.getId() == empleado.getId()) {
-        //            String clienteToUpdate = parseEmpleado(empleado);
-        //            byte[] by = clienteToUpdate.getBytes();
-        //            buffer.wrap(by);
-        //            sbc.write(buffer);
-        //        }
-        //        buffer.flip();
-        //    }
-        //} catch (IOException ioe) {
-        //    ioe.printStackTrace();
-        //}
+        try (FileChannel sbc = FileChannel.open(ARCHIVO, APPEND, READ)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Empleado dbClient = parseRegistro(registro);
+                if (dbClient.getId() == empleado.getId()) {
+                    String clienteToUpdate = parseEmpleado(empleado);
+                    byte[] by = clienteToUpdate.getBytes();
+                    buffer.wrap(by);
+                    sbc.write(buffer);
+                }
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     @Override
@@ -100,28 +130,39 @@ public class EmpleadoDaoNio implements EmpleadoDao {
 
     @Override
     public Optional<Empleado> read(int id) {
+        Empleado search = new Empleado();
+        search.setId(id);
+        Empleado find = (Empleado) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Empleado empleado = parseRegistro(registro);
-                if (empleado.getId() == id) {
-                    return Optional.of(empleado);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Empleado usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
     public void destroy(int id) {
 
     }
-    private Empleado parseRegistro(CharBuffer registro) {
+    private static Empleado parseRegistro(CharBuffer registro) {
         Empleado empleado = new Empleado();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

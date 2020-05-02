@@ -147,20 +147,26 @@ public class RedBlackTree {
     /**
      * Print all items.
      */
-    public void printTree( ) {
-        printTree( header.right );
+    public String printTree( ) {
+        String str = printTree( header.right ) ;
+        treeStr = "";
+        return str;
     }
 
     /**
      * Internal method to print a subtree in sorted order.
      * @param t the node that roots the tree.
      */
-    private void printTree( RedBlackNode t ) {
+    public String treeStr = "";
+    private String printTree( RedBlackNode t ) {
         if( t != nullNode ) {
             printTree( t.left );
+
             System.out.println( t.element );
+            treeStr += t.element.toString() + "\n";
             printTree( t.right );
         }
+        return treeStr;
     }
 
     /**
@@ -268,25 +274,4 @@ public class RedBlackTree {
     private static RedBlackNode parent;
     private static RedBlackNode grand;
     private static RedBlackNode great;
-
-
-    // Test program
-    public static void main( String [ ] args ) {
-        RedBlackTree t = new RedBlackTree( );
-        final int NUMS = 400000;
-        final int GAP  =  35461;
-
-        System.out.println( "Checking... (no more output means success)" );
-
-        for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-            t.insert( new Integer( i ) );
-
-        if( ((Integer)(t.findMin( ))).intValue( ) != 1 ||
-                ((Integer)(t.findMax( ))).intValue( ) != NUMS - 1 )
-            System.out.println( "FindMin or FindMax error!" );
-
-        for( int i = 1; i < NUMS; i++ )
-            if( ((Integer)(t.find( new Integer( i ) ))).intValue( ) != i )
-                System.out.println( "Find error1!" );
-    }
 }

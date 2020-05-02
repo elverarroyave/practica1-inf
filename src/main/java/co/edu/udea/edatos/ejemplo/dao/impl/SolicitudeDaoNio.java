@@ -12,11 +12,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.SolicitudDao;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
+import co.edu.udea.edatos.ejemplo.model.FacturaTask;
 import co.edu.udea.edatos.ejemplo.model.Solicitud;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -29,16 +32,41 @@ public class SolicitudeDaoNio implements SolicitudDao {
     private final static int LONGITUD_EQUIPO_ID = 10;
     private final static int LONGITUD_CLIENTE_ID = 10;
 
-    private final static String NOMBRE_ARCHIVO = "solicitudes";
+    public final static String NOMBRE_ARCHIVO = "solicitudes";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    public static final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public SolicitudeDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
+                Solicitud solicitud = parseRegistro(registro);
+                Solicitud toSave = new Solicitud();
+                toSave.setId(solicitud.getId());
+                toSave.setDirection(direccion++);
+
+                System.out.println(String.format("%s -> %s", solicitud.getId(), direccion));
+                indice.insert(toSave);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -52,26 +80,42 @@ public class SolicitudeDaoNio implements SolicitudDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        Solicitud toInsert = new Solicitud();
+        toInsert.setId(solicitud.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return solicitud;
     }
 
     @Override
     public Optional<Solicitud> read(int id) {
+        Solicitud search = new Solicitud();
+        search.setId(id);
+        Solicitud find = (Solicitud) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                Solicitud cliente = parseRegistro(registro);
-                if (cliente.getId() == id) {
-                    return Optional.of(cliente);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            Solicitud usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
@@ -118,7 +162,7 @@ public class SolicitudeDaoNio implements SolicitudDao {
     }
 
 
-    private Solicitud parseRegistro(CharBuffer registro) {
+    private static Solicitud parseRegistro(CharBuffer registro) {
         Solicitud solicitud = new Solicitud();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

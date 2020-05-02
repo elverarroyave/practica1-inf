@@ -1,5 +1,9 @@
 package co.edu.udea.edatos.ejemplo.controller;
 
+import co.edu.udea.edatos.ejemplo.dao.*;
+import co.edu.udea.edatos.ejemplo.dao.impl.*;
+import co.edu.udea.edatos.ejemplo.model.Empleado;
+import co.edu.udea.edatos.ejemplo.model.TaskEquipoUser;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
@@ -12,6 +16,19 @@ public class ContenedorPrincipalController {
     @FXML
     private BorderPane contenedorPrincipal;
 
+    public ContenedorPrincipalController() {
+        ClienteDaoNio.crearIndice();
+        ComponentDaoNio.crearIndice();
+        EmpleadoDaoNio.crearIndice();
+        EquipoComponentDaoNio.crearIndice();
+        EquipoDaoNio.crearIndice();
+        FacturaDaoNio.crearIndice();
+        FacturaTaskDaoNio.crearIndice();
+        SolicitudeDaoNio.crearIndice();
+        SolicitudTaskDaoNio.crearIndice();
+        TaskDaoNio.crearIndice();
+        TaskEquipoUserDaoNio.crearIndice();
+    }
 
     public void mnuSalir(){ System.exit(0);}
 
@@ -118,6 +135,15 @@ public class ContenedorPrincipalController {
         try {
             AnchorPane generateFactura = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/factura/generate-factura.fxml")));
             contenedorPrincipal.setCenter(generateFactura);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void tree(){
+        try {
+            AnchorPane tree = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/tree/red-black-tree-view.fxml")));
+            contenedorPrincipal.setCenter(tree);
         } catch (IOException e) {
             e.printStackTrace();
         }

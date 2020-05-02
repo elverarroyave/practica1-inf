@@ -7,6 +7,8 @@ public class Equipo implements Comparable<Equipo> {
     private String model;
     private int pcOwner;
 
+    private Integer direction;
+
     public Equipo(){
 
     }
@@ -53,6 +55,14 @@ public class Equipo implements Comparable<Equipo> {
     @Override
     public String toString() {
         return String.format("Id: %s Brand: %s Model: %s", id, brand, model);
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override

@@ -34,9 +34,9 @@ public class SolicitudTaskController {
     @FXML
     private TableColumn<Task, String> clmPayment;
 
-    SolicitudTaskBsn relationBsn = new SolicitudTaskBsn();
-    SolicitudBsn solicitudBsn = new SolicitudBsn();
-    TaskBsn taskBsn = new TaskBsn();
+    static SolicitudTaskBsn relationBsn = new SolicitudTaskBsn();
+    static SolicitudBsn solicitudBsn = new SolicitudBsn();
+    static TaskBsn taskBsn = new TaskBsn();
 
     @FXML
     private void initialize() {

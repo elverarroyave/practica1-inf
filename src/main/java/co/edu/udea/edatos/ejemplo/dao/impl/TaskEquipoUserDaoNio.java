@@ -3,6 +3,7 @@ package co.edu.udea.edatos.ejemplo.dao.impl;
 import co.edu.udea.edatos.ejemplo.dao.TaskEquipoUserDao;
 import co.edu.udea.edatos.ejemplo.model.Task;
 import co.edu.udea.edatos.ejemplo.model.TaskEquipoUser;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -15,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -24,16 +26,41 @@ public class TaskEquipoUserDaoNio implements TaskEquipoUserDao {
     private final static int LONGITUD_REGISTRO = 50;
     private final static int LONGITUD_ID = 10;
 
-    private final static String NOMBRE_ARCHIVO = "tareas_equipos_users";
+    public final static String NOMBRE_ARCHIVO = "tareas_equipos_users";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    public static final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public TaskEquipoUserDaoNio() {
+    }
+
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
+                TaskEquipoUser teu = parseRegistro(registro);
+                TaskEquipoUser toSave = new TaskEquipoUser();
+                toSave.setId(teu.getId());
+                toSave.setDirection(direccion++);
+
+                System.out.println(String.format("%s -> %s", teu.getId(), direccion));
+               indice.insert(toSave);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -47,26 +74,42 @@ public class TaskEquipoUserDaoNio implements TaskEquipoUserDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        TaskEquipoUser toInsert = new TaskEquipoUser();
+        toInsert.setId(task.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return task;
     }
 
     @Override
     public Optional<TaskEquipoUser> read(int id) {
+        TaskEquipoUser search = new TaskEquipoUser();
+        search.setId(id);
+        TaskEquipoUser find = (TaskEquipoUser) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                TaskEquipoUser task = parseRegistro(registro);
-                if (task.getId() == id) {
-                    return Optional.of(task);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            TaskEquipoUser usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
@@ -112,7 +155,7 @@ public class TaskEquipoUserDaoNio implements TaskEquipoUserDao {
         return tasks;
     }
 
-    private TaskEquipoUser parseRegistro(CharBuffer registro) {
+    private static TaskEquipoUser parseRegistro(CharBuffer registro) {
         TaskEquipoUser task = new TaskEquipoUser();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

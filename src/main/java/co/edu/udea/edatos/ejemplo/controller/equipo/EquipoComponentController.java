@@ -35,9 +35,9 @@ public class EquipoComponentController {
     @FXML
     private TableColumn<Component, String> clmDescription;
 
-    EquipoBsn equipoBs = new EquipoBsn();
-    ComponentBsn componentBsn = new ComponentBsn();
-    EquipoComponentBsn relationBsn = new EquipoComponentBsn();
+    static EquipoBsn equipoBs = new EquipoBsn();
+    static ComponentBsn componentBsn = new ComponentBsn();
+    static EquipoComponentBsn relationBsn = new EquipoComponentBsn();
 
     @FXML
     private void initialize() {

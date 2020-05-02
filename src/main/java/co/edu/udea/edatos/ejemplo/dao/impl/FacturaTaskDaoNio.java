@@ -1,7 +1,9 @@
 package co.edu.udea.edatos.ejemplo.dao.impl;
 
 import co.edu.udea.edatos.ejemplo.dao.FacturaTaskDao;
+import co.edu.udea.edatos.ejemplo.model.Factura;
 import co.edu.udea.edatos.ejemplo.model.FacturaTask;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -23,16 +26,40 @@ public class FacturaTaskDaoNio implements FacturaTaskDao {
     private final static int LONGITUD_REGISTRO = 30;
     private final static int LONGITUD_ID = 10;
 
-    private final static String NOMBRE_ARCHIVO = "factura_tareas";
+    public final static String NOMBRE_ARCHIVO = "factura_tareas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    public static final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public FacturaTaskDaoNio() {
+    }
+    public static void crearIndice() {
         if (!Files.exists(ARCHIVO)) {
             try {
                 Files.createFile(ARCHIVO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+
+                FacturaTask facturaTask = parseRegistro(registro);
+                FacturaTask toSave = new FacturaTask();
+                toSave.setId(facturaTask.getId());
+                toSave.setDirection(direccion++);
+
+                System.out.println(String.format("%s -> %s", facturaTask.getId(), direccion));
+                indice.insert(toSave);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -46,26 +73,42 @@ public class FacturaTaskDaoNio implements FacturaTaskDao {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        FacturaTask toInsert = new FacturaTask();
+        toInsert.setId(task.getId());
+        toInsert.setDirection(direccion++);
+        indice.insert(toInsert);
         return task;
     }
 
     @Override
     public Optional<FacturaTask> read(int id) {
+        FacturaTask search = new FacturaTask();
+        search.setId(id);
+        FacturaTask find = (FacturaTask) indice.find(search);
+
+        if (Objects.isNull(find)) {
+            System.out.println("El usuario no se encontró en el índice, por ende no existe en el archivo");
+            return Optional.empty();
+        }
+
+        Integer direccionRegistro = find.getDirection();
+        System.out.println("El usuario fue encontrado en el índice y se va a la dirección: " + direccionRegistro);
+
+        System.out.println("(" + direccionRegistro * LONGITUD_REGISTRO + ")");
         try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
             ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
-            while (sbc.read(buffer) > 0) {
-                buffer.rewind();
-                CharBuffer registro = Charset.defaultCharset().decode(buffer);
-                FacturaTask task = parseRegistro(registro);
-                if (task.getId() == id) {
-                    return Optional.of(task);
-                }
-                buffer.flip();
-            }
+            sbc.position(direccionRegistro * LONGITUD_REGISTRO);
+            sbc.read(buffer);
+            buffer.rewind();
+            CharBuffer registro = Charset.defaultCharset().decode(buffer);
+            FacturaTask usuario = parseRegistro(registro);
+            buffer.flip();
+            return Optional.of(usuario);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
@@ -111,7 +154,7 @@ public class FacturaTaskDaoNio implements FacturaTaskDao {
         return tasks;
     }
 
-    private FacturaTask parseRegistro(CharBuffer registro) {
+    private static FacturaTask parseRegistro(CharBuffer registro) {
         FacturaTask task = new FacturaTask();
 
         String identificacion = registro.subSequence(0, LONGITUD_ID).toString().trim();

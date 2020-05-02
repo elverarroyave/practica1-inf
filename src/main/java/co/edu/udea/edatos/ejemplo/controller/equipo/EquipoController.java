@@ -25,8 +25,8 @@ public class EquipoController {
     @FXML
     private ComboBox<Cliente> cmbClientes;
 
-    private EquipoBsn equipoBs = new EquipoBsn();
-    ClienteBsn clienteBsn = new ClienteBsn();
+    private static EquipoBsn equipoBs = new EquipoBsn();
+    private static ClienteBsn clienteBsn = new ClienteBsn();
 
     @FXML
     public void initialize() {

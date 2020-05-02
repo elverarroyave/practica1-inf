@@ -7,6 +7,8 @@ public class Task implements Comparable<Task> {
     private String description;
     private Double payment;
 
+    private Integer direction;
+
     public Task() {
 
     }
@@ -48,6 +50,14 @@ public class Task implements Comparable<Task> {
 
     public void setPayment(Double payment) {
         this.payment = payment;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override
