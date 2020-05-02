@@ -26,10 +26,10 @@ public class FacturaTaskDaoNio implements FacturaTaskDao {
     private final static int LONGITUD_REGISTRO = 30;
     private final static int LONGITUD_ID = 10;
 
-    private final static String NOMBRE_ARCHIVO = "factura_tareas";
+    public final static String NOMBRE_ARCHIVO = "factura_tareas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public FacturaTaskDaoNio() {

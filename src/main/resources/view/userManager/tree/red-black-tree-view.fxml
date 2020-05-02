@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udea.edatos.ejemplo.controller.tree.RedBlackTreeController">
+
+    <children>
+        <VBox prefHeight="500.0" prefWidth="400.0" spacing="20.0">
+            <children>
+                <Label prefHeight="27.0" prefWidth="572.0" text="RedBlackTree" textAlignment="CENTER" textFill="#3284d7">
+                    <font>
+                        <Font name="Arial Bold" size="18.0" />
+                    </font>
+                </Label>
+                <GridPane layoutY="40.0" prefHeight="118.0" prefWidth="360.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="276.0" minWidth="10.0" prefWidth="103.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="456.0" minWidth="10.0" prefWidth="257.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="79.0" minHeight="10.0" prefHeight="79.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="152.0" minHeight="0.0" prefHeight="97.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="201.0" minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label prefHeight="17.0" prefWidth="65.0" text="Archivo:" />
+                        <ComboBox fx:id="cmbFile" onAction="#cmbFile_action" prefHeight="56.0" prefWidth="257.0" GridPane.columnIndex="1" />
+                        <Button fx:id="btn" mnemonicParsing="false" onAction="#view" text="Visualizar" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    </children>
+                </GridPane>
+            <TextField fx:id="idDraw" prefHeight="276.0" prefWidth="360.0" />
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>

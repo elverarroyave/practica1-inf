@@ -29,10 +29,10 @@ public class TaskDaoNio implements TaskDao {
     private final static int LONGITUD_DESCRIPTION = 40;
     private final static int LONGITUD_PAYMENT = 10;
 
-    private final static String NOMBRE_ARCHIVO = "tareas";
+    public final static String NOMBRE_ARCHIVO = "tareas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public TaskDaoNio() {

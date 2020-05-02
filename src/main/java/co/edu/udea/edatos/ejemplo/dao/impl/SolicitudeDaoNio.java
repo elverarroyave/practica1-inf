@@ -32,10 +32,10 @@ public class SolicitudeDaoNio implements SolicitudDao {
     private final static int LONGITUD_EQUIPO_ID = 10;
     private final static int LONGITUD_CLIENTE_ID = 10;
 
-    private final static String NOMBRE_ARCHIVO = "solicitudes";
+    public final static String NOMBRE_ARCHIVO = "solicitudes";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public SolicitudeDaoNio() {

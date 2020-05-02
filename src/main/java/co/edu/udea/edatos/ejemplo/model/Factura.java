@@ -63,6 +63,11 @@ public class Factura implements Comparable<Factura> {
     }
 
     @Override
+    public String toString() {
+        return String.format("id: %s", id);
+    }
+
+    @Override
     public int compareTo(Factura o) {
         return id - o.getId();
     }

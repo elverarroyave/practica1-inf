@@ -49,6 +49,7 @@ public class Component implements Comparable<Component> {
     public void setDirection(Integer direction) {
         this.direction = direction;
     }
+
     @Override
     public int compareTo(Component o) {
         return id - o.getId();

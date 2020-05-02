@@ -139,4 +139,13 @@ public class ContenedorPrincipalController {
             e.printStackTrace();
         }
     }
+
+    public void tree(){
+        try {
+            AnchorPane tree = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/tree/red-black-tree-view.fxml")));
+            contenedorPrincipal.setCenter(tree);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

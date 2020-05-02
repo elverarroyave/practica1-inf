@@ -26,10 +26,10 @@ public class TaskEquipoUserDaoNio implements TaskEquipoUserDao {
     private final static int LONGITUD_REGISTRO = 50;
     private final static int LONGITUD_ID = 10;
 
-    private final static String NOMBRE_ARCHIVO = "tareas_equipos_users";
+    public final static String NOMBRE_ARCHIVO = "tareas_equipos_users";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public TaskEquipoUserDaoNio() {

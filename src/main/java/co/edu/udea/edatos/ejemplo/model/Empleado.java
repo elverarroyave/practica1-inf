@@ -111,6 +111,11 @@ public class Empleado implements Comparable<Empleado> {
     }
 
     @Override
+    public String toString() {
+        return String.format("id: %s", id);
+    }
+
+    @Override
     public int compareTo(Empleado o) {
         return id - o.getId();
     }

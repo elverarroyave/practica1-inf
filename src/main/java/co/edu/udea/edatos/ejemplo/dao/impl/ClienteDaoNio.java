@@ -31,10 +31,10 @@ public class ClienteDaoNio implements ClienteDao {
     private final static int LONGITUD_ADRESS = 30;
     private final static int LONGITUD_NUMBER = 15;
 
-    private final static String NOMBRE_ARCHIVO = "clientes";
+    public final static String NOMBRE_ARCHIVO = "clientes";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public ClienteDaoNio() {

@@ -29,10 +29,10 @@ public class FacturaDaoNio implements FacturaDao {
     private final static int LONGITUD_DESCRIPTION = 20;
     private final static int LONGITUD_DATE = 40;
 
-    private final static String NOMBRE_ARCHIVO = "facturas";
+    public final static String NOMBRE_ARCHIVO = "facturas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public FacturaDaoNio() {

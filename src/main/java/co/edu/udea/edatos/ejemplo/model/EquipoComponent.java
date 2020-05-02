@@ -51,6 +51,11 @@ public class EquipoComponent implements Comparable<EquipoComponent> {
     }
 
     @Override
+    public String toString() {
+        return String.format("id: %s", id);
+    }
+
+    @Override
     public int compareTo(EquipoComponent o) {
         return id - o.getId();
     }

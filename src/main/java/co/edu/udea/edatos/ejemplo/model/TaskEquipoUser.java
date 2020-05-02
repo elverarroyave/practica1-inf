@@ -70,6 +70,11 @@ public class TaskEquipoUser implements Comparable<TaskEquipoUser> {
     }
 
     @Override
+    public String toString() {
+        return String.format("id: %s", id);
+    }
+
+    @Override
     public int compareTo(TaskEquipoUser o) {
         return id - o.getId();
     }

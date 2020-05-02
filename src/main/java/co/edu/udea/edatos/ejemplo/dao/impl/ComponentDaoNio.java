@@ -29,10 +29,10 @@ public class ComponentDaoNio implements ComponentDao {
     private final static int LONGITUD_PRODUCER = 20;
     private final static int LONGITUD_DESCRIPTION = 40;
 
-    private final static String NOMBRE_ARCHIVO = "components";
+    public final static String NOMBRE_ARCHIVO = "components";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public ComponentDaoNio() {

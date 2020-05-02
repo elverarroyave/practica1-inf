@@ -50,6 +50,11 @@ public class SolicitudTask implements Comparable<SolicitudTask> {
     }
 
     @Override
+    public String toString() {
+        return String.format("id: %s", id);
+    }
+
+    @Override
     public int compareTo(SolicitudTask o) {
         return id - o.getId();
     }

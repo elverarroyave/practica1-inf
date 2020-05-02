@@ -30,10 +30,10 @@ public class EquipoDaoNio implements EquipoDao {
     private final static int LONGITUD_BRAND = 20;
     private final static int LONGITUD_MODEL = 40;
 
-    private final static String NOMBRE_ARCHIVO = "equipos";
+    public final static String NOMBRE_ARCHIVO = "equipos";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
-    private static final RedBlackTree indice = new RedBlackTree();
+    public static final RedBlackTree indice = new RedBlackTree();
     private static int direccion = 0;
 
     public EquipoDaoNio() {
