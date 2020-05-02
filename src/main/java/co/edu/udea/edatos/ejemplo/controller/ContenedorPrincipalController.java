@@ -140,6 +140,15 @@ public class ContenedorPrincipalController {
         }
     }
 
+    public void mnuGenerateReport(){
+        try {
+            AnchorPane generateReport = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/report/generate-report.fxml")));
+            contenedorPrincipal.setCenter(generateReport);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void tree(){
         try {
             AnchorPane tree = FXMLLoader.load((getClass().getClassLoader().getResource("view/userManager/tree/red-black-tree-view.fxml")));
