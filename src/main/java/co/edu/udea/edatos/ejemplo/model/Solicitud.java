@@ -1,7 +1,7 @@
 package co.edu.udea.edatos.ejemplo.model;
 
 
-public class Solicitud {
+public class Solicitud implements Comparable<Solicitud> {
 
     private int id;
     private boolean state;
@@ -66,6 +66,8 @@ public class Solicitud {
         return String.format("id: %s - reception date: %s - equipo id: %s", this.id, receptionDate, idEquipo);
     }
 
-
-
+    @Override
+    public int compareTo(Solicitud o) {
+        return id - o.getId();
+    }
 }

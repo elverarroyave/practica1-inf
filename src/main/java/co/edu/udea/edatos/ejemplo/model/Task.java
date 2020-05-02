@@ -1,6 +1,6 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
     private int id;
     private String name;
@@ -55,4 +55,8 @@ public class Task {
         return String.format("Task: %s Payment: %s", name, payment);
     }
 
+    @Override
+    public int compareTo(Task o) {
+        return id - o.getId();
+    }
 }

@@ -1,6 +1,6 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-public class Factura {
+public class Factura implements Comparable<Factura> {
 
     private int id;
     private Double payment;
@@ -51,5 +51,9 @@ public class Factura {
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
     }
-    
+
+    @Override
+    public int compareTo(Factura o) {
+        return id - o.getId();
+    }
 }

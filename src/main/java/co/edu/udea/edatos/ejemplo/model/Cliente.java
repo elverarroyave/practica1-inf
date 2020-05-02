@@ -1,6 +1,6 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-public class Cliente {
+public class Cliente implements Comparable<Cliente> {
     private int id;
     private String name;
     private String lastName;
@@ -82,5 +82,10 @@ public class Cliente {
     @Override
     public String toString() {
         return String.format("Id: %s Name: %s", id, name);
+    }
+
+    @Override
+    public int compareTo(Cliente o) {
+        return id - o.getId();
     }
 }

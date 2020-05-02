@@ -1,6 +1,6 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-public class SolicitudTask {
+public class SolicitudTask implements Comparable<SolicitudTask> {
     private int id;
     private int solicitudId;
     private int taskId;
@@ -37,5 +37,10 @@ public class SolicitudTask {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    @Override
+    public int compareTo(SolicitudTask o) {
+        return id - o.getId();
     }
 }

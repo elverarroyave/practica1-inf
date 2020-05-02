@@ -1,6 +1,6 @@
 package co.edu.udea.edatos.ejemplo.model;
 
-public class Empleado {
+public class Empleado implements Comparable<Empleado> {
 
     private int id;
     private String name;
@@ -98,5 +98,10 @@ public class Empleado {
 
     public void setNumberPhone(String numberPhone) {
         this.numberPhone = numberPhone;
+    }
+
+    @Override
+    public int compareTo(Empleado o) {
+        return id - o.getId();
     }
 }

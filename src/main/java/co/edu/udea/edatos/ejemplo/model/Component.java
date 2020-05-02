@@ -1,7 +1,7 @@
 package co.edu.udea.edatos.ejemplo.model;
 
 
-public class Component {
+public class Component implements Comparable<Component> {
 
     private int id;
     private String producer;
@@ -40,4 +40,8 @@ public class Component {
         return String.format("Id: %s Producer: %s Description: %s", id, producer, description);
     }
 
+    @Override
+    public int compareTo(Component o) {
+        return id - o.getId();
+    }
 }
