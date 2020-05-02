@@ -17,6 +17,7 @@ import java.util.Optional;
 import co.edu.udea.edatos.ejemplo.dao.EquipoDao;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
 import co.edu.udea.edatos.ejemplo.model.Equipo;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -30,6 +31,9 @@ public class EquipoDaoNio implements EquipoDao {
     private final static String NOMBRE_ARCHIVO = "equipos";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    private final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public EquipoDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
@@ -37,6 +41,24 @@ public class EquipoDaoNio implements EquipoDao {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        crearIndice();
+    }
+
+    private void crearIndice() {
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Equipo equipo = parseRegistro(registro);
+                System.out.println(String.format("%s -> %s", equipo.getId(), direccion));
+                indice.insert(equipo);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 

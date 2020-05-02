@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.TaskDao;
 import co.edu.udea.edatos.ejemplo.model.Task;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -29,6 +30,9 @@ public class TaskDaoNio implements TaskDao {
     private final static String NOMBRE_ARCHIVO = "tareas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    private final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public TaskDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
@@ -36,6 +40,24 @@ public class TaskDaoNio implements TaskDao {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        crearIndice();
+    }
+
+    private void crearIndice() {
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Task task = parseRegistro(registro);
+                System.out.println(String.format("%s -> %s", task.getId(), direccion));
+                indice.insert(task);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 

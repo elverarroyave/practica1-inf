@@ -3,6 +3,10 @@ package co.edu.udea.edatos.ejemplo.dao.impl;
 import co.edu.udea.edatos.ejemplo.dao.TaskEquipoUserDao;
 import co.edu.udea.edatos.ejemplo.model.Task;
 import co.edu.udea.edatos.ejemplo.model.TaskEquipoUser;
+<<<<<<< Updated upstream
+=======
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
+>>>>>>> Stashed changes
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,6 +31,12 @@ public class TaskEquipoUserDaoNio implements TaskEquipoUserDao {
     private final static String NOMBRE_ARCHIVO = "tareas_equipos_users";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+<<<<<<< Updated upstream
+=======
+    private final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
+>>>>>>> Stashed changes
     public TaskEquipoUserDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
@@ -36,6 +46,25 @@ public class TaskEquipoUserDaoNio implements TaskEquipoUserDao {
             }
         }
     }
+<<<<<<< Updated upstream
+=======
+    private void crearIndice() {
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                TaskEquipoUser teu = parseRegistro(registro);
+                System.out.println(String.format("%s -> %s", teu.getId(), direccion));
+               indice.insert(teu);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+>>>>>>> Stashed changes
 
     @Override
     public TaskEquipoUser create(TaskEquipoUser task) {

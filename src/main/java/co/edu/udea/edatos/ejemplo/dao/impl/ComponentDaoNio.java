@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import co.edu.udea.edatos.ejemplo.dao.ComponentDao;
 import co.edu.udea.edatos.ejemplo.model.Component;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -29,6 +30,9 @@ public class ComponentDaoNio implements ComponentDao {
     private final static String NOMBRE_ARCHIVO = "components";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    private final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public ComponentDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
@@ -36,6 +40,24 @@ public class ComponentDaoNio implements ComponentDao {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        crearIndice();
+    }
+
+    private void crearIndice() {
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Component component = parseRegistro(registro);
+                System.out.println(String.format("%s -> %s", component.getId(), direccion));
+                indice.insert(component);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 

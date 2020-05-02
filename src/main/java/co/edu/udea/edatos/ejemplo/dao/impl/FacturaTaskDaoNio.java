@@ -2,6 +2,10 @@ package co.edu.udea.edatos.ejemplo.dao.impl;
 
 import co.edu.udea.edatos.ejemplo.dao.FacturaTaskDao;
 import co.edu.udea.edatos.ejemplo.model.FacturaTask;
+<<<<<<< Updated upstream
+=======
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
+>>>>>>> Stashed changes
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -26,6 +30,12 @@ public class FacturaTaskDaoNio implements FacturaTaskDao {
     private final static String NOMBRE_ARCHIVO = "factura_tareas";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+<<<<<<< Updated upstream
+=======
+    private final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
+>>>>>>> Stashed changes
     public FacturaTaskDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
@@ -34,6 +44,26 @@ public class FacturaTaskDaoNio implements FacturaTaskDao {
                 ioe.printStackTrace();
             }
         }
+<<<<<<< Updated upstream
+=======
+        crearIndice();
+    }
+    private void crearIndice() {
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                FacturaTask facturaTask = parseRegistro(registro);
+                System.out.println(String.format("%s -> %s", facturaTask.getId(), direccion));
+                indice.insert(facturaTask);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+>>>>>>> Stashed changes
     }
 
     @Override

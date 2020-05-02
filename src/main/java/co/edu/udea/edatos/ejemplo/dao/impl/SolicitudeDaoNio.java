@@ -17,6 +17,7 @@ import java.util.Optional;
 import co.edu.udea.edatos.ejemplo.dao.SolicitudDao;
 import co.edu.udea.edatos.ejemplo.model.Cliente;
 import co.edu.udea.edatos.ejemplo.model.Solicitud;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 
@@ -32,6 +33,9 @@ public class SolicitudeDaoNio implements SolicitudDao {
     private final static String NOMBRE_ARCHIVO = "solicitudes";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    private final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public SolicitudeDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
@@ -39,6 +43,24 @@ public class SolicitudeDaoNio implements SolicitudDao {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        crearIndice();
+    }
+
+    private void crearIndice() {
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Solicitud solicitud = parseRegistro(registro);
+                System.out.println(String.format("%s -> %s", solicitud.getId(), direccion));
+                indice.insert(solicitud);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 

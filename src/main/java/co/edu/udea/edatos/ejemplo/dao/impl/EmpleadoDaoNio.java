@@ -2,6 +2,7 @@ package co.edu.udea.edatos.ejemplo.dao.impl;
 
 import co.edu.udea.edatos.ejemplo.dao.EmpleadoDao;
 import co.edu.udea.edatos.ejemplo.model.Empleado;
+import co.edu.udea.edatos.ejemplo.util.RedBlackTree;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -36,6 +37,9 @@ public class EmpleadoDaoNio implements EmpleadoDao {
     private final static String NOMBRE_ARCHIVO = "empleados";
     private final static Path ARCHIVO = Paths.get(NOMBRE_ARCHIVO);
 
+    private final RedBlackTree indice = new RedBlackTree();
+    private static int direccion = 0;
+
     public EmpleadoDaoNio() {
         if (!Files.exists(ARCHIVO)) {
             try {
@@ -43,6 +47,24 @@ public class EmpleadoDaoNio implements EmpleadoDao {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+        }
+        crearIndice();
+    }
+
+    private void crearIndice() {
+        System.out.println("Creando índice");
+        try (SeekableByteChannel sbc = Files.newByteChannel(ARCHIVO)) {
+            ByteBuffer buffer = ByteBuffer.allocate(LONGITUD_REGISTRO);
+            while (sbc.read(buffer) > 0) {
+                buffer.rewind();
+                CharBuffer registro = Charset.defaultCharset().decode(buffer);
+                Empleado empleado = parseRegistro(registro);
+                System.out.println(String.format("%s -> %s", empleado.getId(), direccion));
+                indice.insert(empleado);
+                buffer.flip();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
