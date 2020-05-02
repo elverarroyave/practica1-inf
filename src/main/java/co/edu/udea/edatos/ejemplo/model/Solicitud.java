@@ -9,6 +9,8 @@ public class Solicitud implements Comparable<Solicitud> {
     private int idEquipo;
     private int idClienteOwner;
 
+    private Integer direction;
+
     public Solicitud() {
 
     }
@@ -59,6 +61,14 @@ public class Solicitud implements Comparable<Solicitud> {
 
     public void setIdClienteOwner(int idClienteOwner) {
         this.idClienteOwner = idClienteOwner;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override

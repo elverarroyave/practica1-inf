@@ -8,6 +8,8 @@ public class TaskEquipoUser implements Comparable<TaskEquipoUser> {
     private int empleadoId;
     private int clienteId;
 
+    private Integer direction;
+
     public TaskEquipoUser() {
     }
 
@@ -57,6 +59,14 @@ public class TaskEquipoUser implements Comparable<TaskEquipoUser> {
 
     public void setClienteId(int clienteId) {
         this.clienteId = clienteId;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override

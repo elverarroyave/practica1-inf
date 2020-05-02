@@ -12,6 +12,8 @@ public class Empleado implements Comparable<Empleado> {
     private String adress;
     private String numberPhone;
 
+    private Integer direction;
+
     public Empleado() {
 
     }
@@ -98,6 +100,14 @@ public class Empleado implements Comparable<Empleado> {
 
     public void setNumberPhone(String numberPhone) {
         this.numberPhone = numberPhone;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override

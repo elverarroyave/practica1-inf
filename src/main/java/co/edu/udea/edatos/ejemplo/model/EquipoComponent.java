@@ -7,6 +7,8 @@ public class EquipoComponent implements Comparable<EquipoComponent> {
     private int equipoId;
     private int componentId;
 
+    private Integer direction;
+
     public EquipoComponent() {
     }
 
@@ -38,6 +40,14 @@ public class EquipoComponent implements Comparable<EquipoComponent> {
 
     public void setComponentId(int id) {
         this.componentId = id;
+    }
+
+    public Integer getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Integer direction) {
+        this.direction = direction;
     }
 
     @Override
