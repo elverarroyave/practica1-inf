@@ -14,4 +14,8 @@ public class Main extends Application {
         stage.setScene(new Scene(root, 680, 600)); //Definimos el tamaño de la ventana
         stage.show();
     }
+
+    public static void main(String[] args) {
+        launch();
+    }
 }
